@@ -5,7 +5,7 @@ type EnvHashMap = HashMap<String, String>;
 #[derive(Debug, Clone)]
 pub struct AppEnv {
     pub location_ip_address: String,
-	pub log_level: tracing::Level,
+    pub log_level: tracing::Level,
     pub start_time: SystemTime,
     pub url_adsbdb: String,
     pub url_tar0190: String,
@@ -30,16 +30,16 @@ impl AppEnv {
         map.get(key).map_or(false, |value| value == "true")
     }
 
-		/// Parse debug and/or trace into tracing level
-		fn parse_log(map: &EnvHashMap) -> tracing::Level {
-			if Self::parse_boolean("LOG_TRACE", map) {
-				tracing::Level::TRACE
-			} else if Self::parse_boolean("LOG_DEBUG", map) {
-				tracing::Level::DEBUG
-			} else {
-				tracing::Level::INFO
-			}
-		}
+    /// Parse debug and/or trace into tracing level
+    fn parse_log(map: &EnvHashMap) -> tracing::Level {
+        if Self::parse_boolean("LOG_TRACE", map) {
+            tracing::Level::TRACE
+        } else if Self::parse_boolean("LOG_DEBUG", map) {
+            tracing::Level::DEBUG
+        } else {
+            tracing::Level::INFO
+        }
+    }
 
     fn parse_string(key: &str, map: &EnvHashMap) -> Result<String, AppError> {
         map.get(key).map_or(
@@ -60,8 +60,8 @@ impl AppEnv {
                 "LOCATION_IP_ADDRESS",
                 &env_map,
             )?)?,
-			log_level: Self::parse_log(&env_map),
-			start_time: SystemTime::now(),
+            log_level: Self::parse_log(&env_map),
+            start_time: SystemTime::now(),
             url_adsbdb: Self::parse_string("URL_ADSBDB", &env_map)?,
             url_tar0190: Self::parse_string("URL_TAR1090", &env_map)?,
             wayland: Self::parse_boolean("WAYLAND", &env_map),
@@ -140,7 +140,7 @@ mod tests {
         // CHECK
         assert_eq!(result, "hello_world");
     }
-	#[test]
+    #[test]
     fn env_parse_log_valid() {
         // FIXTURES
         let map = HashMap::from([("RANDOM_STRING".to_owned(), "123".to_owned())]);
@@ -217,7 +217,6 @@ mod tests {
         // CHECK
         assert_eq!(result, tracing::Level::TRACE);
     }
-
 
     #[test]
     fn env_parse_boolean_ok() {
