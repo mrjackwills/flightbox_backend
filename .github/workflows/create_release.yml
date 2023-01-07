@@ -1,0 +1,47 @@
+
+name: Release CI
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      ####################################
+      ## Build binaries for release page #
+      ####################################
+
+      - name: install rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+
+      - name: install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+
+        # Build for linux aarch64, aka 64 bit pi 4
+      - name: build aarch64-unknown-linux-musl
+        run: cross build --target aarch64-unknown-linux-musl --release
+        # Compress ouput into tar
+      - name: compress aarch64 binary
+        run: tar -C target/aarch64-unknown-linux-musl/release -czf ./flightbox_backend_aarch64.tar.gz flightbox
+
+      ###################
+      ## Create release #
+      ###################
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          name: ${{ github.ref_name }}
+          body_path: ".github/release-body.md"
+          draft: false
+          files: |
+             flightbox_backend_aarch64.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

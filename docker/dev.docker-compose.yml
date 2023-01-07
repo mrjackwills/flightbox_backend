@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  flightbox_rust:
+    image: flightbox_rust:0.0.1
+    build:
+      context: /workspaces/flightbox_rust
+      dockerfile: docker/Dockerfile
+      args:
+        - DOCKER_UID=${DOCKER_UID}
+        - DOCKER_GUID=${DOCKER_GUID}
+        - DOCKER_TIME_CONT=${DOCKER_TIME_CONT}
+        - DOCKER_TIME_CITY=${DOCKER_TIME_CITY}
+    container_name: flightbox_
+    env_file: /workspaces/flightbox_rust/docker/.env
+    volumes:
+      - /ramdrive/ip.addr:/ip_address/ip.addr:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    cap_drop:
+      - all
+    security_opt:
+      - no-new-privileges
+    ipc: private
+    restart: always
+    networks:
+      - flightbox_rust-net
+    deploy:
+      resources:
+        limits:
+          memory: 16M
+          # todo logs
+networks:
+  flightbox_client-net:
+    name: flightbox_client-net
