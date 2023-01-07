@@ -166,7 +166,7 @@ mod tests {
         let na = String::from("na");
         AppEnv {
             location_ip_address,
-			log_level: tracing::Level::INFO,
+            log_level: tracing::Level::INFO,
             start_time: SystemTime::now(),
             url_adsbdb: na.clone(),
             url_tar0190: na.clone(),
