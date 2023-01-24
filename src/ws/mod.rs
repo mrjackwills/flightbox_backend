@@ -11,7 +11,6 @@ use futures_util::{
 use std::sync::Arc;
 use tokio::{
     net::TcpStream,
-    sync::broadcast::{Receiver, Sender},
     task::JoinHandle,
 };
 use tokio_tungstenite::{self, tungstenite::Message, MaybeTlsStream, WebSocketStream};
