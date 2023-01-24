@@ -14,10 +14,8 @@
 	See the frontend website source <a href='https://github.com/mrjackwills/flightbox_vueleafcast_vue' target='_blank' rel='noopener noreferrer'>here</a>
 </p>
 
-
 ### Requirements
-Built specifically to work with [this](https://mikenye.gitbook.io/ads-b/intro/overview)
-
+Built specifically to work in conjuction with [this](https://mikenye.gitbook.io/ads-b/intro/overview)
 
 ### Build
 pi 4 64bit
@@ -37,7 +35,7 @@ cargo watch -q -c -w src/ -x 'test  -- --test-threads=1 --nocapture'
 cargo test -- --test-threads=1 --nocapture
 ```
 
-### Ignore this 
+### Ignore this
 
 dbus in docker?
 
