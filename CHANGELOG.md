@@ -7,9 +7,8 @@
 ### Features
 + reqwest's add timeout & user agent, [8e53a6174747d0fb7472de962f2dcb7b434e665a]
 
-### Refactos
+### Refactors
 + dead code removed, [304bb716ec61fafc4f1d8f2683e4e3972f897a31]
-
 
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.0.1'>v0.0.1</a>
 ### 2023-01-06
