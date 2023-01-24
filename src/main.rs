@@ -5,10 +5,9 @@
 #![warn(clippy::nursery)]
 #![allow(clippy::module_name_repetitions, clippy::doc_markdown)]
 // Only allow when debugging
-#![allow(unused)]
+// #![allow(unused)]
 
 use parse_env::AppEnv;
-use tracing::Level;
 
 mod adsbdb_response;
 mod app_error;
