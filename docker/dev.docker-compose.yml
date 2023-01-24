@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   flightbox_rust:
-    image: flightbox_rust:0.0.1
+    image: flightbox_rust:0.0.2
     build:
       context: /workspaces/flightbox_rust
       dockerfile: docker/Dockerfile
