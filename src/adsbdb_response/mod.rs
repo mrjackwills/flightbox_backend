@@ -132,7 +132,7 @@ impl Adsbdb {
     ) -> Result<CombinedResponse, AppError> {
         let mut url = format!("{adsbdb_url}/aircraft/{}", aircraft.hex);
 
-		// if callsign add callsign to url
+        // if callsign add callsign to url
         if let Some(callsign) = aircraft.flight.as_ref() {
             url.push_str(&format!("?callsign={callsign}"));
         }

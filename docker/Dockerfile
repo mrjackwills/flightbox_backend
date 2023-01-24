@@ -22,7 +22,7 @@ RUN addgroup -g ${DOCKER_GUID} -S ${DOCKER_APP_GROUP} \
 WORKDIR /app
 
 # This gets automatically updated via create_release.sh
-RUN wget https://github.com/mrjackwills/flightbox_backend/releases/download/v0.0.1/flightbox_backend_aarch64.tar.gz \
+RUN wget https://github.com/mrjackwills/flightbox_backend/releases/download/v0.0.2/flightbox_backend_aarch64.tar.gz \
 	&& tar xzvf flightbox_backend_aarch64.tar.gz flightbox \
 	&& rm flightbox_backend_aarch64.tar.gz \
 	&& chown ${DOCKER_APP_USER}:${DOCKER_APP_GROUP} /app/
