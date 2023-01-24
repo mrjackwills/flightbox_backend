@@ -1,3 +1,4 @@
+use reqwest::Client;
 use serde::{Deserialize, Deserializer, Serialize};
 
 use crate::{app_error::AppError, parse_env::AppEnv};
@@ -9,6 +10,7 @@ pub struct Aircraft {
     pub icao_type: String,
     pub manufacturer: String,
     pub mode_s: String,
+    pub registration: String,
     pub registered_owner_country_iso_name: String,
     pub registered_owner_country_name: String,
     pub registered_owner_operator_flag_code: String,
@@ -102,12 +104,26 @@ impl Adsbdb {
         }
     }
 
+    fn get_client() -> Result<Client, AppError> {
+        Ok(reqwest::Client::builder()
+            .connect_timeout(std::time::Duration::from_millis(5000))
+            .gzip(true)
+            .brotli(true)
+            .user_agent(format!(
+                "{}/{}",
+                env!("CARGO_PKG_NAME"),
+                env!("CARGO_PKG_VERSION")
+            ))
+            .build()?)
+    }
+
     async fn aircraft_json(&self) -> Result<Tar1090Response, AppError> {
-        let resp = reqwest::get(&self.aircraft_url)
+        Ok(Self::get_client()?
+            .get(&self.aircraft_url)
+            .send()
             .await?
             .json::<Tar1090Response>()
-            .await?;
-        Ok(resp)
+            .await?)
     }
 
     async fn adsbdb_data(
@@ -116,12 +132,14 @@ impl Adsbdb {
     ) -> Result<CombinedResponse, AppError> {
         let mut url = format!("{adsbdb_url}/aircraft/{}", aircraft.hex);
 
+		// if callsign add callsign to url
         if let Some(callsign) = aircraft.flight.as_ref() {
             url.push_str(&format!("?callsign={callsign}"));
         }
 
-        // if callsign add callsign to url
-        let response = reqwest::get(&url)
+        let response = Self::get_client()?
+            .get(&url)
+            .send()
             .await?
             .json::<Response<AdsbdbResponse>>()
             .await?
