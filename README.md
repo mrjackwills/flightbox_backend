@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-	See the frontend website source <a href='https://github.com/mrjackwills/flightbox_vueleafcast_vue' target='_blank' rel='noopener noreferrer'>here</a>
+	See the frontend website source <a href='https://github.com/mrjackwills/flightbox_vue' target='_blank' rel='noopener noreferrer'>here</a>
 </p>
 
 ### Requirements
