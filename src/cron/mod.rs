@@ -32,8 +32,7 @@ impl Cron {
         match self.adsbdb.get_current_flights().await {
             Ok(_) => debug!("cron executed correctly"),
             Err(e) => {
-                error!(%e);
-                error!("croner error");
+                error!("croner::{e:?}");
             }
         }
     }
