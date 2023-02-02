@@ -185,7 +185,7 @@ ask_continue () {
 
 # Build target as github action would
 cargo_build () {
-	cross build --target arm-unknown-linux-musleabihf --release
+	cross build --target aarch64-unknown-linux-musl --release
 	ask_continue
 }
 
