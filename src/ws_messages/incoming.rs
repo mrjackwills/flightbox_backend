@@ -59,12 +59,15 @@ mod tests {
 
     use super::*;
 
-	fn now_string() -> String{
-		format!("{}", std::time::SystemTime::now()
-		.duration_since(UNIX_EPOCH)
-		.unwrap()
-		.as_millis())
-	}
+    fn now_string() -> String {
+        format!(
+            "{}",
+            std::time::SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_millis()
+        )
+    }
 
     #[test]
     fn message_incoming_parse_invalid() {
@@ -76,10 +79,8 @@ mod tests {
         let result = to_struct(data);
         assert!(result.is_none());
 
-
         let result = to_struct(&now_string());
         assert!(result.is_none());
-
     }
 
     #[test]
@@ -98,19 +99,19 @@ mod tests {
     fn message_incoming_parse_on_unique_ok() {
         let now = now_string();
 
-		let data = format!(r#"{{"data":{{"message":"on"}}, "unique":"{now}"}}"#);
+        let data = format!(r#"{{"data":{{"message":"on"}}, "unique":"{now}"}}"#);
         let result = to_struct(&data);
         assert!(result.is_some());
         let result = result.unwrap();
         match result {
             MessageValues::Valid(ParsedMessage::On, unique) => {
-        		assert_eq!(unique, now);
+                assert_eq!(unique, now);
             }
             _ => unreachable!("Shouldn't have matched this"),
         };
     }
 
-	#[test]
+    #[test]
     fn message_incoming_parse_off_unique_err() {
         let data = r#"
             {
@@ -124,21 +125,21 @@ mod tests {
 
     #[test]
     fn message_incoming_parse_off_unique_ok() {
-		let now = now_string();
-      
-		let data = format!(r#"{{"data":{{"message":"off"}}, "unique":"{now}"}}"#);
+        let now = now_string();
+
+        let data = format!(r#"{{"data":{{"message":"off"}}, "unique":"{now}"}}"#);
         let result = to_struct(&data);
         assert!(result.is_some());
         let result = result.unwrap();
         match result {
             MessageValues::Valid(ParsedMessage::Off, unique) => {
-        		assert_eq!(unique, now);
+                assert_eq!(unique, now);
             }
             _ => unreachable!("Shouldn't have matched this"),
         };
     }
 
-	#[test]
+    #[test]
     fn message_incoming_parse_flights_unique_err() {
         let data = r#"
             {
@@ -152,21 +153,21 @@ mod tests {
 
     #[test]
     fn message_incoming_parse_flights_unique_ok() {
-		let now = now_string();
-      
-		let data = format!(r#"{{"data":{{"message":"flights"}}, "unique":"{now}"}}"#);
+        let now = now_string();
+
+        let data = format!(r#"{{"data":{{"message":"flights"}}, "unique":"{now}"}}"#);
         let result = to_struct(&data);
         assert!(result.is_some());
         let result = result.unwrap();
         match result {
             MessageValues::Valid(ParsedMessage::Flights, unique) => {
-        		assert_eq!(unique, now);
+                assert_eq!(unique, now);
             }
             _ => unreachable!("Shouldn't have matched this"),
         };
     }
 
-	#[test]
+    #[test]
     fn message_incoming_parse_status_unique_err() {
         let data = r#"
             {
@@ -180,15 +181,15 @@ mod tests {
 
     #[test]
     fn message_incoming_parse_status_unique_ok() {
-		let now = now_string();
-      
-		let data = format!(r#"{{"data":{{"message":"status"}}, "unique":"{now}"}}"#);
+        let now = now_string();
+
+        let data = format!(r#"{{"data":{{"message":"status"}}, "unique":"{now}"}}"#);
         let result = to_struct(&data);
         assert!(result.is_some());
         let result = result.unwrap();
         match result {
             MessageValues::Valid(ParsedMessage::Status, unique) => {
-        		assert_eq!(unique, now);
+                assert_eq!(unique, now);
             }
             _ => unreachable!("Shouldn't have matched this"),
         };

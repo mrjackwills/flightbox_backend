@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   flightbox:
-    image: flightbox:0.0.2
+    image: flightbox:0.1.0
     build:
       context: /workspaces/pi_client
       dockerfile: docker/Dockerfile
