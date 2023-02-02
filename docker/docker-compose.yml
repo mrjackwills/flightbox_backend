@@ -6,8 +6,8 @@ services:
       context: $HOME/flightbox/
       dockerfile: ./docker/Dockerfile
       args:
-        - DOCKER_UID=${DOCKER_UID}
-        - DOCKER_GUID=${DOCKER_GUID}
+        - DOCKER_UID=${DOCKER_UID} 
+        - DOCKER_GUID=${DOCKER_GUID} 
         - DOCKER_TIME_CONT=${DOCKER_TIME_CONT}
         - DOCKER_TIME_CITY=${DOCKER_TIME_CITY}
     container_name: flightbox_client

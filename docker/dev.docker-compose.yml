@@ -1,20 +1,20 @@
 version: "3.8"
 services:
-  flightbox_rust:
-    image: flightbox_rust:0.0.2
+  flightbox:
+    image: flightbox:0.0.2
     build:
-      context: /workspaces/flightbox_rust
+      context: /workspaces/pi_client
       dockerfile: docker/Dockerfile
       args:
         - DOCKER_UID=${DOCKER_UID}
         - DOCKER_GUID=${DOCKER_GUID}
         - DOCKER_TIME_CONT=${DOCKER_TIME_CONT}
         - DOCKER_TIME_CITY=${DOCKER_TIME_CITY}
-    container_name: flightbox_
-    env_file: /workspaces/flightbox_rust/docker/.env
+    container_name: flightbox
     volumes:
       - /ramdrive/ip.addr:/ip_address/ip.addr:ro
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - /workspaces/pi_client/.env:/app_env/.env:ro
     cap_drop:
       - all
     security_opt:
@@ -22,12 +22,11 @@ services:
     ipc: private
     restart: always
     networks:
-      - flightbox_rust-net
-    deploy:
-      resources:
-        limits:
-          memory: 16M
-          # todo logs
+      - flightbox-net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "16m"
 networks:
-  flightbox_client-net:
-    name: flightbox_client-net
+  flightbox-net:
+    name: flightbox-net
