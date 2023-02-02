@@ -59,8 +59,7 @@ impl SysInfo {
             {
                 Ok(output) => String::from_utf8(output.stdout).unwrap_or_default().trim() == "i 0",
                 Err(e) => {
-                    error!(%e);
-                    error!("unable to get screen_status");
+                    error!("wayland::{e:?}");
                     false
                 }
             }
@@ -90,7 +89,7 @@ impl SysInfo {
                     next_char.first() == Some(&"n".to_owned())
                 }
                 Err(e) => {
-                    error!(%e);
+                    error!("XSET error:: {e:?}");
                     false
                 }
             }
@@ -113,8 +112,7 @@ impl SysInfo {
             {
                 Ok(_) => trace!("screen status changed"),
                 Err(e) => {
-                    error!(%e);
-                    error!("unable to toggle screen_status");
+                    error!("toggle::{e:?}");
                 }
             }
         } else {
@@ -125,8 +123,7 @@ impl SysInfo {
             {
                 Ok(_) => trace!("screen status changed"),
                 Err(e) => {
-                    error!(%e);
-                    error!("unable to toggle screen_status");
+                    error!("toggle::{e:?}");
                 }
             }
         }
@@ -217,7 +214,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn sysinfo_scrren_status_ok() {
+    async fn sysinfo_screen_status_ok() {
         // FIXTURES
         let app_env = setup_test_env(String::new());
 

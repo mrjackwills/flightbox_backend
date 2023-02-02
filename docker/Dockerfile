@@ -1,32 +1,47 @@
-# ############
-# # App only #
-# ############
+#########
+# SETUP #
+#########
 
-FROM alpine:3.17
+FROM alpine:3.17 AS SETUP
 
-ARG DOCKER_GUID=1000 \
-	DOCKER_UID=1000 \
-	DOCKER_TIME_CONT=America \
-	DOCKER_TIME_CITY=New_York \
-	DOCKER_APP_USER=app_user \
-	DOCKER_APP_GROUP=app_group
+ARG DOCKER_APP_USER=app_user \
+	DOCKER_APP_GROUP=app_group \
+	DOCKER_GUID \
+	DOCKER_UID \
+	DOCKER_TIME_CONT \
+	DOCKER_TIME_CITY
 
 ENV TZ=${DOCKER_TIME_CONT}/${DOCKER_TIME_CITY}
 
-RUN addgroup -g ${DOCKER_GUID} -S ${DOCKER_APP_GROUP} \
+RUN addgroup -g "${DOCKER_GUID}" -S ${DOCKER_APP_GROUP} \
 	&& adduser -u ${DOCKER_UID} -S -G ${DOCKER_APP_GROUP} ${DOCKER_APP_USER} \
-	&& apk --no-cache add tzdata xset \
-	&& cp /usr/share/zoneinfo/${TZ} /etc/localtime \
-	&& echo ${TZ} > /etc/timezone 
+ 	&& apk --no-cache add xset ca-certificates \
+	&& update-ca-certificates
 
 WORKDIR /app
 
 # This gets automatically updated via create_release.sh
-RUN wget https://github.com/mrjackwills/flightbox_backend/releases/download/v0.0.2/flightbox_backend_aarch64.tar.gz \
+RUN wget https://github.com/mrjackwills/flightbox_backend/releases/download/v0.1.0/flightbox_backend_aarch64.tar.gz \
 	&& tar xzvf flightbox_backend_aarch64.tar.gz flightbox \
-	&& rm flightbox_backend_aarch64.tar.gz \
-	&& chown ${DOCKER_APP_USER}:${DOCKER_APP_GROUP} /app/
+	&& rm flightbox_backend_aarch64.tar.gz
+
+##########
+# RUNNER #
+##########
+
+FROM scratch AS RUNNER
+
+ARG DOCKER_TIME_CONT \
+        DOCKER_TIME_CITY \
+        DOCKER_APP_USER=app_user \
+        DOCKER_APP_GROUP=app_group
+
+ENV TZ=${DOCKER_TIME_CONT}/${DOCKER_TIME_CITY}
+
+COPY --from=SETUP /app/ /app
+COPY --from=SETUP /etc/group /etc/passwd /etc/
+COPY --from=SETUP /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 USER ${DOCKER_APP_USER}
 
-CMD [ "./flightbox"]
+ENTRYPOINT ["/app/flightbox"]

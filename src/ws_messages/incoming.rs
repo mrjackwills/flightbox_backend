@@ -50,233 +50,148 @@ pub fn to_struct(input: &str) -> Option<MessageValues> {
 }
 
 // message_incoming
-//
+
 // cargo watch -q -c -w src/ -x 'test message_incoming -- --test-threads=1 --nocapture'
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
+#[cfg(test)]
+#[allow(clippy::unwrap_used)]
+mod tests {
+    use std::time::UNIX_EPOCH;
 
-//     #[test]
-//     fn message_incoming_parse_invalid() {
-//         let data = r#""#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+    use super::*;
 
-//         let data = r#"{}"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
-//     }
+    fn now_string() -> String {
+        format!(
+            "{}",
+            std::time::SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_millis()
+        )
+    }
 
-//     #[test]
-//     fn message_incoming_parse_add_alarm_valid() {
-//         let data = r#"
-//             {
-//             	"data": {
-//             		"name" : "add_alarm",
-//             		"body": {
-//             			"hour":6,"minute":15,"days":[0,1,2,3,4,5,6]
-//             		}
-//             	}
-//             }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_some());
-//         let result = result.unwrap();
-//         match result {
-//             MessageValues::Valid(ParsedMessage::AddAlarm(data)) => {
-//                 assert_eq!(data.days, vec![0, 1, 2, 3, 4, 5, 6]);
-//                 assert_eq!(data.hour, 6);
-//                 assert_eq!(data.minute, 15);
-//             }
-//             _ => unreachable!("Shouldn't have matched this"),
-//         };
-//     }
+    #[test]
+    fn message_incoming_parse_invalid() {
+        let data = r#""#;
+        let result = to_struct(data);
+        assert!(result.is_none());
 
-//     #[test]
-//     fn message_incoming_parse_add_alarm_invalid() {
-//         // No body
-//         let data = r#"
-//     {
-//     	"data": {
-//     		"name" : "add_alarm",
-//     	}
-//     }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+        let data = r#"{}"#;
+        let result = to_struct(data);
+        assert!(result.is_none());
 
-//         // Empty body
-//         let data = r#"
-//     		{
-//     			"data": {
-//     				"name" : "add_alarm",
-//     				"body: "",
-//     			}
-//     		}"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+        let result = to_struct(&now_string());
+        assert!(result.is_none());
+    }
 
-//         // Empty body object
-//         let data = r#"
-//     		{
-//     			"data": {
-//     				"name" : "add_alarm",
-//     				"body: {},
-//     			}
-//     		}"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+    #[test]
+    fn message_incoming_parse_on_unique_err() {
+        let data = r#"
+            {
+            	"data": {
+            		"message" : "on",
+            	}
+            }"#;
+        let result = to_struct(data);
+        assert!(result.is_none());
+    }
 
-//         // No hours
-//         let data = r#"
-//     		  {
-//     			  "data": {
-//     				  "name" : "add_alarm",
-//     				  "body: {"minute":6,"days":[0,1,2,3,4,5,6]},
-//     			  }
-//     		  }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+    #[test]
+    fn message_incoming_parse_on_unique_ok() {
+        let now = now_string();
 
-//         // invalid hours - number as string
-//         let data = r#"
-//     		  {
-//     			  "data": {
-//     				  "name" : "add_alarm",
-//     				  "body: {"hour":"6","minute":4, "days":[0,1,2,3,4,5,6]},
-//     			  }
-//     		  }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+        let data = format!(r#"{{"data":{{"message":"on"}}, "unique":"{now}"}}"#);
+        let result = to_struct(&data);
+        assert!(result.is_some());
+        let result = result.unwrap();
+        match result {
+            MessageValues::Valid(ParsedMessage::On, unique) => {
+                assert_eq!(unique, now);
+            }
+            _ => unreachable!("Shouldn't have matched this"),
+        };
+    }
 
-//         // invalid hours - string
-//         let data = r#"
-//     			{
-//     				"data": {
-//     					"name" : "add_alarm",
-//     					"body: {"hour":"string","minute":4, "days":[0,1,2,3,4,5,6]},
-//     				}
-//     			}"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+    #[test]
+    fn message_incoming_parse_off_unique_err() {
+        let data = r#"
+            {
+            	"data": {
+            		"message" : "off",
+            	}
+            }"#;
+        let result = to_struct(data);
+        assert!(result.is_none());
+    }
 
-//         // No minute
-//         let data = r#"
-//     		  {
-//     			  "data": {
-//     				  "name" : "add_alarm",
-//     				  "body: {"hour":6,"days":[0,1,2,3,4,5,6]},
-//     			  }
-//     		  }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+    #[test]
+    fn message_incoming_parse_off_unique_ok() {
+        let now = now_string();
 
-//         // invalid minute - number as string
-//         let data = r#"
-//     		  {
-//     			  "data": {
-//     				  "name" : "add_alarm",
-//     				  "body: {"hour":6,"minutes":"4", "days":[0,1,2,3,4,5,6]},
-//     			  }
-//     		  }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+        let data = format!(r#"{{"data":{{"message":"off"}}, "unique":"{now}"}}"#);
+        let result = to_struct(&data);
+        assert!(result.is_some());
+        let result = result.unwrap();
+        match result {
+            MessageValues::Valid(ParsedMessage::Off, unique) => {
+                assert_eq!(unique, now);
+            }
+            _ => unreachable!("Shouldn't have matched this"),
+        };
+    }
 
-//         // invalid minutes - string
-//         let data = r#"
-//     			{
-//     				"data": {
-//     					"name" : "add_alarm",
-//     					"body: {"hour":6,"minutes":"string", "days":[0,1,2,3,4,5,6]},
-//     				}
-//     			}"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+    #[test]
+    fn message_incoming_parse_flights_unique_err() {
+        let data = r#"
+            {
+            	"data": {
+            		"message" : "flights",
+            	}
+            }"#;
+        let result = to_struct(data);
+        assert!(result.is_none());
+    }
 
-//         // invalid minutes - > 59
-//         let data = r#"
-//     			{
-//     				"data": {
-//     					"name" : "add_alarm",
-//     					"body: {"hour":6,"minutes":"61", "days":[0,1,2,3,4,5,6]},
-//     				}
-//     			}"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+    #[test]
+    fn message_incoming_parse_flights_unique_ok() {
+        let now = now_string();
 
-//         // No days
-//         let data = r#"
-//     		  {
-//     			  "data": {
-//     				  "name" : "add_alarm",
-//     				  "body: {"hour":6,"minute":3},
-//     			  }
-//     		  }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+        let data = format!(r#"{{"data":{{"message":"flights"}}, "unique":"{now}"}}"#);
+        let result = to_struct(&data);
+        assert!(result.is_some());
+        let result = result.unwrap();
+        match result {
+            MessageValues::Valid(ParsedMessage::Flights, unique) => {
+                assert_eq!(unique, now);
+            }
+            _ => unreachable!("Shouldn't have matched this"),
+        };
+    }
 
-//         // invalid days - number
-//         let data = r#"
-//     		  {
-//     			  "data": {
-//     				  "name" : "add_alarm",
-//     				  "body: {"hour":6,"minute":4, "days":"1"},
-//     			  }
-//     		  }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+    #[test]
+    fn message_incoming_parse_status_unique_err() {
+        let data = r#"
+            {
+            	"data": {
+            		"message" : "status",
+            	}
+            }"#;
+        let result = to_struct(data);
+        assert!(result.is_none());
+    }
 
-//         // invalid days - string
-//         let data = r#"
-//     			{
-//     				"data": {
-//     					"name" : "add_alarm",
-//     					"body: {"hour":6,"minute":1, "days":"string"},
-//     				}
-//     			}"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
+    #[test]
+    fn message_incoming_parse_status_unique_ok() {
+        let now = now_string();
 
-//         // invalid days - vec of number strings
-//         let data = r#"
-//     		 {
-//     			 "data": {
-//     				 "name" : "add_alarm",
-//     				 "body: {"hour":6,"minute":4, "days":["1", "2"]},
-//     			 }
-//     		 }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
-
-//         // invalid days - vec of number strings
-//         let data = r#"
-// 		   {
-// 			   "data": {
-// 				   "name" : "add_alarm",
-// 				   "body: {"hour":6,"minute":4, "days":[8]},
-// 			   }
-// 		   }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
-
-//         // invalid days - vec of string strings
-//         let data = r#"
-//     		 {
-//     			 "data": {
-//     				 "name" : "add_alarm",
-//     				 "body: {"hour":6,"minute":4, "days":["one", "two"]},
-//     			 }
-//     		 }"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
-
-//         // invalid days - day > 6
-//         let data = r#"
-// 			{
-// 				"data": {
-// 					"name" : "add_alarm",
-// 					"body: {"hour":6,"minute":4, "days":[7]},
-// 				}
-// 			}"#;
-//         let result = to_struct(data);
-//         assert!(result.is_none());
-//     }
-// }
+        let data = format!(r#"{{"data":{{"message":"status"}}, "unique":"{now}"}}"#);
+        let result = to_struct(&data);
+        assert!(result.is_some());
+        let result = result.unwrap();
+        match result {
+            MessageValues::Valid(ParsedMessage::Status, unique) => {
+                assert_eq!(unique, now);
+            }
+            _ => unreachable!("Shouldn't have matched this"),
+        };
+    }
+}

@@ -20,7 +20,7 @@
 
 
 ### Requirements
-Built specifically to work in conjuction with [this](https://mikenye.gitbook.io/ads-b/intro/overview)
+Built specifically to work in conjunction with [this](https://mikenye.gitbook.io/ads-b/intro/overview)
 
 ### Build
 pi 4 64bit
@@ -28,7 +28,6 @@ pi 4 64bit
 ```bash
 cross build --target aarch64-unknown-linux-musl --release
 ```
-
 ### Tests
 
 <!-- aarch64-unknown-linux-musl -->

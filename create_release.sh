@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # rust create_release
-# v0.1.0
+# v0.2.2
 
 PACKAGE_NAME='flightbox'
 STAR_LINE='****************************************'
@@ -185,7 +185,7 @@ ask_continue () {
 
 # Build target as github action would
 cargo_build () {
-	cross build --target arm-unknown-linux-musleabihf --release
+	cross build --target aarch64-unknown-linux-musl --release
 	ask_continue
 }
 
@@ -201,8 +201,16 @@ release_continue () {
 	ask_continue
 }
 
+check_typos () {
+	echo -e "\n${PURPLE}checking for typos${RESET}"
+	typos
+	ask_continue
+}
+
 # Full flow to create a new release
 release_flow() {
+	check_typos
+
 	check_git
 	get_git_remote_url
 	cargo_test
@@ -235,8 +243,10 @@ release_flow() {
 	release_continue "git checkout main"
 	git checkout main
 
-	release_continue "git merge --no-ff \"${RELEASE_BRANCH}\" -m \"chore: merge ${RELEASE_BRANCH} into main\"" 
 	git merge --no-ff "$RELEASE_BRANCH" -m "chore: merge ${RELEASE_BRANCH} into main"
+	echo -e "${PURPLE}git merge --no-ff \"${RELEASE_BRANCH}\" -m \"chore: merge ${RELEASE_BRANCH} into main\"${RESET}"
+	echo -e "\n${PURPLE}cargo check${RESET}\n"
+	cargo check
 
 	release_continue "git tag -am \"${RELEASE_BRANCH}\" \"$NEW_TAG_WITH_V\""
 	git tag -am "${RELEASE_BRANCH}" "$NEW_TAG_WITH_V"

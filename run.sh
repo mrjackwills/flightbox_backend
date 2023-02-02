@@ -39,7 +39,7 @@ if ! [ -x "$(command -v dialog)" ]; then
 fi
 
 set_base_dir() {
-	local workspace="/workspaces/${MONO_NAME}"
+	local workspace="/workspaces/pi_client"
 	local server="$HOME/${MONO_NAME}"
 	if [[ -d "$workspace" ]]
 	then
@@ -87,7 +87,7 @@ dev_down () {
 
 production_up () {
 	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
-	DOCKER_GUID=${DOCKER_GUID} \
+DOCKER_GUID=${DOCKER_GUID} \
 	DOCKER_UID=${DOCKER_UID} \
 	DOCKER_TIME_CONT=${DOCKER_TIME_CONT} \
 	DOCKER_TIME_CITY=${DOCKER_TIME_CITY} \
@@ -129,10 +129,10 @@ select_containers() {
 	do
 		case $choice in
 			0)
-				exit
-				break;;
+				exit;;
 			1)
-				TO_RUN=("${API}")
+				dev_up
+				# TO_RUN=("${API}")
 				;;
 		esac
 	done
@@ -159,8 +159,7 @@ main() {
 	do
 		case $choice in
 			0)
-				exit
-				break;;
+				exit;;
 			1)
 				select_containers
 				break;;

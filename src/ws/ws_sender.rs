@@ -34,7 +34,7 @@ impl WSSender {
     pub async fn on_text(&mut self, message: String) {
         if let Some(data) = to_struct(&message) {
             match data {
-                MessageValues::Invalid(error) => error!("{:?}", error),
+                MessageValues::Invalid(error) => error!("{error:?}"),
                 MessageValues::Valid(message, unique) => match message {
                     ParsedMessage::Status => self.send_status(unique).await,
                     ParsedMessage::Flights => match self.adsbdb.get_current_flights().await {
@@ -43,8 +43,7 @@ impl WSSender {
                                 .await;
                         }
                         Err(e) => {
-                            error!(%e);
-                            error!("get_current_flights error");
+                            error!("get_current_flights::{e:?}");
                         }
                     },
                     ParsedMessage::On => SysInfo::toggle_screen(&self.app_env, true),
@@ -71,7 +70,7 @@ impl WSSender {
         {
             Ok(_) => trace!("Message sent"),
             Err(e) => {
-                error!("send_ws_response::SEND-ERROR::{:?}", e);
+                error!("send_ws_response::SEND-ERROR::{e:?}");
                 self.writer.lock().await.close().await.unwrap_or(());
             }
         }

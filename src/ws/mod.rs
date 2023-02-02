@@ -90,8 +90,7 @@ pub async fn open_connection(app_env: AppEnv) {
                 info!("open_connection completed, will try to reconnect");
             }
             Err(e) => {
-                let connect_error = format!("{e}");
-                error!(%connect_error);
+                error!("open_connection::{e:?}");
                 connection_details.fail_connect();
             }
         }
