@@ -148,7 +148,7 @@ impl Adsbdb {
         Ok(CombinedResponse {
             aircraft: response.aircraft,
             flightroute: response.flightroute,
-            // callsign seperate here
+            // callsign separate here
             callsign: aircraft.flight,
             altitude: aircraft.alt_baro.unwrap_or(0),
         })
