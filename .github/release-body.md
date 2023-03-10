@@ -1,19 +1,16 @@
-### 2023-02-02
+### 2023-03-10
 
 ### Chores
-+ dev container install typos, [c55a9d3f818af63d69dd5e1f3038809f02ac7a67]
-+ github workflow on main semver only, [6dacf644dfd4d699d96e19697b19d81b0e37e29c]
++ create_release updated, [58bbab678f68af2a11d47c889db24c99c148c9b8]
++ dependencies updated, [cfbba36df539a1f762de93450577a9ea0d9b6302]
++ devcontainer updated, [79dc04ef34ae43c13ac33863558db08b10750de4]
 
-### Features
-+ openssl dependency removed, [346706a91518f9af05661328dd629df7e5d4f219]
-+ create_release check for typos, [3a419dcf227cc11c8268ad44b92ecbdb1a18da63]
-+ use scratch docker container, [ab80ffee5e813f6ad649c6d519c22b4a6dc9c7c4]
+### Fixes
++ github workflow on tag only, [48568141a2e63b4667f991915bd2cb05e84eb2f2]
++ chmod *.sh files, [683eb4892afa17bd2bd2159b2ea9847e3aa309eb]
 
 ### Refactors
-+ tracing, [80a90454c7d71efdb8e8f043c1619b4cd6a325c3]
-
-### Tests
-+ incoming message tests, [2e0645ef8fa2d13e3c04084cdccfb449250ceaff]
++ `unwrap_or` to `ok` or `unwrap_or_default`, [639f972475cd469a5ccd56a995d974715be19b21]
 
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details
