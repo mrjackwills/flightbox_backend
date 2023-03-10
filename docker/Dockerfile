@@ -32,9 +32,9 @@ RUN wget https://github.com/mrjackwills/flightbox_backend/releases/download/v0.1
 FROM scratch AS RUNNER
 
 ARG DOCKER_TIME_CONT \
-        DOCKER_TIME_CITY \
-        DOCKER_APP_USER=app_user \
-        DOCKER_APP_GROUP=app_group
+		DOCKER_TIME_CITY \
+		DOCKER_APP_USER=app_user \
+		DOCKER_APP_GROUP=app_group
 
 ENV TZ=${DOCKER_TIME_CONT}/${DOCKER_TIME_CITY}
 
