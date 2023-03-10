@@ -48,7 +48,7 @@ impl Cron {
                         .as_millis()
                         .saturating_sub(now.elapsed().as_millis()),
                 )
-                .unwrap_or(0),
+                .unwrap_or_default(),
             );
             tokio::time::sleep(to_sleep).await;
         }

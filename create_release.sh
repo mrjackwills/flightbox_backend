@@ -183,10 +183,10 @@ ask_continue () {
 	fi
 }
 
-# Build target as github action would
-cargo_build () {
-	cross build --target aarch64-unknown-linux-musl --release
-	ask_continue
+# build for production, as Github action would do
+cross_build() {
+	echo -e "\n${GREEN}cross  build --target aarch64-unknown-linux-musl --release${RESET}"
+	cross  build --target aarch64-unknown-linux-musl --release
 }
 
 # run all tests
@@ -213,8 +213,10 @@ release_flow() {
 
 	check_git
 	get_git_remote_url
+
 	cargo_test
-	cargo_build
+	cross_build
+
 	cd "${CWD}" || error_close "Can't find ${CWD}"
 	check_tag
 	
@@ -233,7 +235,10 @@ release_flow() {
 	
 	echo "cargo fmt"
 	cargo fmt
-	
+
+	echo -e "\n${PURPLE}cargo check${RESET}"
+	cargo check
+
 	release_continue "git add ."
 	git add .
 
@@ -241,12 +246,9 @@ release_flow() {
 	git commit -m "chore: release ${NEW_TAG_WITH_V}"
 
 	release_continue "git checkout main"
+	echo -e "git merge --no-ff \"${RELEASE_BRANCH}\" -m \"chore: merge ${RELEASE_BRANCH} into main\"" 
 	git checkout main
-
 	git merge --no-ff "$RELEASE_BRANCH" -m "chore: merge ${RELEASE_BRANCH} into main"
-	echo -e "${PURPLE}git merge --no-ff \"${RELEASE_BRANCH}\" -m \"chore: merge ${RELEASE_BRANCH} into main\"${RESET}"
-	echo -e "\n${PURPLE}cargo check${RESET}\n"
-	cargo check
 
 	release_continue "git tag -am \"${RELEASE_BRANCH}\" \"$NEW_TAG_WITH_V\""
 	git tag -am "${RELEASE_BRANCH}" "$NEW_TAG_WITH_V"
@@ -257,7 +259,7 @@ release_flow() {
 	release_continue "git checkout dev"
 	git checkout dev
 
-	release_continue "git merge --no-ff main -m 'chore: merge main into dev'"
+	release_continue "git merge --no-ff main -m \"chore: merge main into dev\""
 	git merge --no-ff main -m 'chore: merge main into dev'
 
 	release_continue "git push origin dev"
@@ -286,7 +288,7 @@ main() {
 			0)
 				exit;;
 			1)
-				cargo_build_all
+				cross_build_all
 				main
 				break;;
 			2)

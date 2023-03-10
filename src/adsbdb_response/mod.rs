@@ -150,7 +150,7 @@ impl Adsbdb {
             flightroute: response.flightroute,
             // callsign separate here
             callsign: aircraft.flight,
-            altitude: aircraft.alt_baro.unwrap_or(0),
+            altitude: aircraft.alt_baro.unwrap_or_default(),
         })
     }
 

@@ -71,7 +71,7 @@ impl WSSender {
             Ok(_) => trace!("Message sent"),
             Err(e) => {
                 error!("send_ws_response::SEND-ERROR::{e:?}");
-                self.writer.lock().await.close().await.unwrap_or(());
+                self.writer.lock().await.close().await.ok();
             }
         }
     }
@@ -91,7 +91,7 @@ impl WSSender {
         )
         .await
         {
-            close.unwrap_or_default();
+            close.ok();
         }
     }
 }
