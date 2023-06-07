@@ -80,7 +80,7 @@ pub async fn open_connection(app_env: AppEnv) {
                 let ws_sender = WSSender::new(
                     &app_env,
                     connection_details.get_connect_instant(),
-					Arc::new(Mutex::new(writer)),
+                    Arc::new(Mutex::new(writer)),
                 );
                 let mut auto_close = AutoClose::default();
                 auto_close.on_ping(&ws_sender);
