@@ -1,16 +1,14 @@
-### 2023-03-10
+### 2023-06-07
 
 ### Chores
-+ create_release updated, [58bbab678f68af2a11d47c889db24c99c148c9b8]
-+ dependencies updated, [cfbba36df539a1f762de93450577a9ea0d9b6302]
-+ devcontainer updated, [79dc04ef34ae43c13ac33863558db08b10750de4]
-
-### Fixes
-+ github workflow on tag only, [48568141a2e63b4667f991915bd2cb05e84eb2f2]
-+ chmod *.sh files, [683eb4892afa17bd2bd2159b2ea9847e3aa309eb]
++ Dockerfile alpine version bump, [8416ad32da75dd248c782c36091ce812a4a3be1d]
++ dependencies updated, [b7d50f491a5dea961d8eca7d1f29eb124eb5edc3], [effc7306fdc6611b4598a0f83fe614b896202b39]
 
 ### Refactors
-+ `unwrap_or` to `ok` or `unwrap_or_default`, [639f972475cd469a5ccd56a995d974715be19b21]
++ dead code removed, [2881f2eee9021cd025ca8b17acc677d058f2f621]
+
+### Reverts
++ .devcontainer sparse protocol now default, [31d0b93b6db00f1d8c7119b33e302e14b2957ff0]
 
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details

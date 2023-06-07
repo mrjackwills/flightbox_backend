@@ -89,6 +89,7 @@ impl WSSender {
             std::time::Duration::from_secs(2),
             self.writer.lock().await.close(),
         )
-        .await.ok();
+        .await
+        .ok();
     }
 }
