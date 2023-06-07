@@ -34,16 +34,17 @@ const X11_SEARCH_TERM_LEN: u8 = 12;
 const BUSCTL: &str = "busctl";
 const XSET: &str = "xset";
 
+const NA: &str = "N/A";
+
 impl SysInfo {
     async fn get_ip(app_env: &AppEnv) -> String {
-        let na = || String::from("N/A");
         let ip = read_to_string(&app_env.location_ip_address)
             .await
-            .unwrap_or_else(|_| na());
+            .unwrap_or_else(|_| NA.into());
         let output = if ip.len() > 1 {
             ip.trim().to_owned()
         } else {
-            na()
+            NA.into()
         };
         output
     }
