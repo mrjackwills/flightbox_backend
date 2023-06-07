@@ -20,11 +20,11 @@ pub struct WSSender {
 }
 
 impl WSSender {
-    pub fn new(app_env: AppEnv, connected_instant: Instant, writer: Arc<Mutex<WSWriter>>) -> Self {
-        let adsbdb = Adsbdb::new(&app_env);
+    pub fn new(app_env: &AppEnv, connected_instant: Instant, writer: Arc<Mutex<WSWriter>>) -> Self {
+        let adsbdb = Adsbdb::new(app_env);
         Self {
             adsbdb,
-            app_env,
+            app_env: app_env.clone(),
             connected_instant,
             writer,
         }
@@ -85,13 +85,11 @@ impl WSSender {
 
     /// close connection, uses a 2 second timeout
     pub async fn close(&mut self) {
-        if let Ok(close) = tokio::time::timeout(
+        tokio::time::timeout(
             std::time::Duration::from_secs(2),
             self.writer.lock().await.close(),
         )
         .await
-        {
-            close.ok();
-        }
+        .ok();
     }
 }
