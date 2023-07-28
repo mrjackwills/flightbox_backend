@@ -184,7 +184,7 @@ ask_continue () {
 # build for production, as Github action would do
 cross_build() {
 	echo -e "\n${GREEN}cross  build --target aarch64-unknown-linux-musl --release${RESET}"
-	cross  build --target aarch64-unknown-linux-musl --release
+	cross build --target aarch64-unknown-linux-musl --release
 }
 
 # run all tests
