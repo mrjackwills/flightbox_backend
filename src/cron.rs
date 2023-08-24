@@ -16,7 +16,7 @@ const ONE_MINUTE_IN_SEC: u64 = 60;
 
 impl Cron {
     /// Create a basic cron job, spawn into own tokio thread
-    pub async fn init(app_env: &AppEnv) {
+    pub fn init(app_env: &AppEnv) {
         let adsbdb = adsbdb_response::Adsbdb::new(app_env);
         let mut inner = Self {
             adsbdb,

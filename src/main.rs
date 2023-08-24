@@ -34,6 +34,6 @@ fn setup_tracing(app_env: &AppEnv) {
 async fn main() {
     let app_env = parse_env::AppEnv::get_env();
     setup_tracing(&app_env);
-    Cron::init(&app_env).await;
+    Cron::init(&app_env);
     open_connection(app_env).await;
 }
