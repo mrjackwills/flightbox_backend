@@ -1,11 +1,8 @@
-### 2023-07-28
+### 2023-08-24
 
 ### Chores
-+ create_release 0.3.0, [aee58c13658acc3f1bdb3ad25de58cf0f4f61e6b]
-+ dependencies updated, [a5721f199a38ac4d5fc7a59aba4e18a8904d4b97]
-
-### Refactors
-+ single files in folders moved to /src, [6af83f226144060fabba58212e2c9e6dc0d1a8b3]
++ Rust 1.72.0 lints, [1e12eb3f0630a9eae22243a43502c4edf6911dca]
++ dependencies updated, [f83bd71908ebfeb36eaefae4f6565bb3adaf96b8]
 
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details
