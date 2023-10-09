@@ -59,14 +59,14 @@ pub struct CombinedResponse {
     #[serde(skip_serializing_if = "Option::is_none")]
     flightroute: Option<Flightroute>,
     callsign: Option<String>,
-    altitude: u64,
+    altitude: i64,
 }
 #[derive(Debug, Deserialize, Serialize)]
 struct Tar1090Aircraft {
     #[serde(rename(serialize = "mode_s"))]
     hex: String,
     #[serde(rename(serialize = "altitude"))]
-    alt_baro: Option<u64>,
+    alt_baro: Option<i64>,
     #[serde(
         default,
         deserialize_with = "trim_flight",
