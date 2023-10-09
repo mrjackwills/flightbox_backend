@@ -1,9 +1,9 @@
 ### Chores
-+ Rust 1.73.0 linting, [19931571cc32e25b71328cf98e2fbf3da23f0a74]
-+ dependencies updated, [10cfe57b8028809b779bde267899a78eacf97580], [fa55cb556e855efb808be0c4b183180c1d62092f]
++ Rust 1.73.0 linting, [e393708d63e634eac7cb5663b3daf805594ae98e]
++ dependencies updated, [405c66695931be58d98e1d153bd1c1821d6f148e], [f5772e6e36f6c5a2f76aa25ac80790aca35826a9]
 
 #### Fixes
-+ elevation changed to i64, [d9944526183770bdd2dc9f035cc98a2b7fbb4af4]
++ elevation changed to i64, [5a3cf163c3fbbd7828e86dabd6ec736942c5bfa6]
 
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.4'>v0.1.4</a>
 ### 2023-08-24
