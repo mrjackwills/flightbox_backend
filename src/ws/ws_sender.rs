@@ -68,7 +68,7 @@ impl WSSender {
             .send(StructuredResponse::data(response, cache, unique))
             .await
         {
-            Ok(_) => trace!("Message sent"),
+            Ok(()) => trace!("Message sent"),
             Err(e) => {
                 error!("send_ws_response::SEND-ERROR::{e:?}");
                 self.writer.lock().await.close().await.ok();
