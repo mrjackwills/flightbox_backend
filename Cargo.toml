@@ -1,6 +1,6 @@
 [package]
 name = "flightbox"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 authors = ["Jack Wills <email@mrjackwills.com>"]
 repository = "https://github.com/mrjackwills/flightbox_backend"
