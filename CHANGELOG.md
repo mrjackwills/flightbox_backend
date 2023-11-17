@@ -1,3 +1,9 @@
+### Chores
++ Lints moved out of main.rs, [773b6bc2031650a9912127e80980175cf991c29b]
++ Rust 1.74.0 linting, [20185f91552dca632837decb178893c82bf37e64]
++ .devcontainer updated, [9dbfb3a43ba3750d60e058cf51d82ecd01434395]
++ dependencies updated, [54549be8a8624e8abd3d2fdeefc4b5a13868b567]
+
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.5'>v0.1.5</a>
 ### 2023-10-09
 
