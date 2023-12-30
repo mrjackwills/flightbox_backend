@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# v0.0.5
+# v0.1.0
 
 # CHANGE
 MONO_NAME='flightbox'
@@ -114,10 +114,41 @@ production_down () {
 	docker compose -f docker-compose.yml down
 }
 
-select_containers() {
-	cmd=(dialog --separate-output --backtitle "Dev containers selection" --checklist "select: postgres + redis +" 14 80 16)
+git_pull_branch() {
+	git checkout -- .
+	git checkout main
+	git pull origin main
+	git fetch --tags
+	latest_tag=$(git tag | sort -V | tail -n 1)
+	git checkout -b "$latest_tag"
+}
+
+pull_branch() {
+	GIT_CLEAN=$(git status --porcelain)
+	if [ -n "$GIT_CLEAN" ]; then
+		echo -e "\n${RED}GIT NOT CLEAN${RESET}\n"
+		printf "%s\n" "${GIT_CLEAN}"
+	fi
+	if [[ -n "$GIT_CLEAN" ]]; then
+		ask_yn "Happy to clear git state"
+		if [[ "$(user_input)" =~ ^n$ ]]; then
+			exit
+		fi
+	fi
+	git_pull_branch
+	main
+}
+
+main() {
+	echo "in main"
+	cmd=(dialog --backtitle "Start ${MONO_NAME} containers" --radiolist "choose environment" 14 80 16)
 	options=(
-		1 "$API" off
+		1 "${DEV} up" off
+		2 "${DEV} down" off
+		3 "${PRO} up" off
+		4 "${PRO} down" off
+		5 "${PRO} rebuild" off
+		6 "pull & branch" off
 	)
 	choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	exitStatus=$?
@@ -132,36 +163,6 @@ select_containers() {
 				exit;;
 			1)
 				dev_up
-				# TO_RUN=("${API}")
-				;;
-		esac
-	done
-	dev_up
-}
-
-main() {
-	echo "in main"
-	cmd=(dialog --backtitle "Start ${MONO_NAME} containers" --radiolist "choose environment" 14 80 16)
-	options=(
-		1 "${DEV} up" off
-		2 "${DEV} down" off
-		3 "${PRO} up" off
-		4 "${PRO} down" off
-		5 "${PRO} rebuild" off
-	)
-	choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
-	exitStatus=$?
-	clear
-	if [ $exitStatus -ne 0 ]; then
-		exit
-	fi
-	for choice in $choices
-	do
-		case $choice in
-			0)
-				exit;;
-			1)
-				select_containers
 				break;;
 			2)
 				dev_down
@@ -176,6 +177,10 @@ main() {
 			5)
 				production_rebuild
 				break;;
+			6)
+				pull_branch
+				break
+			;;
 		esac
 	done
 }
