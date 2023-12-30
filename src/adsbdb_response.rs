@@ -5,6 +5,7 @@ use crate::{app_error::AppError, parse_env::AppEnv};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Aircraft {
+    #[allow(clippy::struct_field_names)]
     #[serde(rename = "type")]
     pub aircraft_type: String,
     pub icao_type: String,
