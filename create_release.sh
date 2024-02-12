@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# rust create_release
-# v0.3.0
+# rust create_release v0.5.5
 
-PACKAGE_NAME='flightbox'
 STAR_LINE='****************************************'
 CWD=$(pwd)
 
@@ -13,20 +11,19 @@ YELLOW='\033[0;33m'
 PURPLE='\033[0;35m'
 RESET='\033[0m'
 
-
 # $1 string - error message
 error_close() {
-	echo -e "\n${RED}ERROR - EXITED: ${YELLOW}$1${RESET}\n";
+	echo -e "\n${RED}ERROR - EXITED: ${YELLOW}$1${RESET}\n"
 	exit 1
 }
 
-if [ -z "$PACKAGE_NAME" ]
-then
-	error_close "No package name"
+# Check that dialog is installed
+if ! [ -x "$(command -v dialog)" ]; then
+	error_close "dialog is not installed"
 fi
 
 # $1 string - question to ask
-ask_yn () {
+ask_yn() {
 	printf "%b%s? [y/N]:%b " "${GREEN}" "$1" "${RESET}"
 }
 
@@ -36,21 +33,26 @@ user_input() {
 	echo "$data"
 }
 
-update_major () {
+# semver major update
+update_major() {
 	local bumped_major
 	bumped_major=$((MAJOR + 1))
 	echo "${bumped_major}.0.0"
 }
 
-update_minor () {
+# semver minor update
+update_minor() {
 	local bumped_minor
 	bumped_minor=$((MINOR + 1))
+	MINOR=bumped_minor
 	echo "${MAJOR}.${bumped_minor}.0"
 }
 
-update_patch () {
+# semver patch update
+update_patch() {
 	local bumped_patch
 	bumped_patch=$((PATCH + 1))
+	PATCH=bumped_patch
 	echo "${MAJOR}.${MINOR}.${bumped_patch}"
 }
 
@@ -62,8 +64,7 @@ get_git_remote_url() {
 # Check that git status is clean
 check_git_clean() {
 	GIT_CLEAN=$(git status --porcelain)
-	if [[ -n $GIT_CLEAN ]]
-	then
+	if [[ -n $GIT_CLEAN ]]; then
 		error_close "git dirty"
 	fi
 }
@@ -72,8 +73,7 @@ check_git_clean() {
 check_git() {
 	CURRENT_GIT_BRANCH=$(git branch --show-current)
 	check_git_clean
-	if [[ ! "$CURRENT_GIT_BRANCH" =~ ^dev$ ]]
-	then
+	if [[ ! "$CURRENT_GIT_BRANCH" =~ ^dev$ ]]; then
 		error_close "not on dev branch"
 	fi
 }
@@ -85,8 +85,7 @@ ask_changelog_update() {
 	printf "%s" "$RELEASE_BODY_TEXT"
 	printf "\n%s\n" "${STAR_LINE}"
 	ask_yn "accept release body"
-	if [[ "$(user_input)" =~ ^y$ ]] 
-	then
+	if [[ "$(user_input)" =~ ^y$ ]]; then
 		update_release_body_and_changelog "$RELEASE_BODY_TEXT"
 	else
 		exit
@@ -95,17 +94,17 @@ ask_changelog_update() {
 
 # Edit the release-body to include new lines from changelog
 # add commit urls to changelog
-# $1 RELEASE_BODY 
-update_release_body_and_changelog () {
+# $1 RELEASE_BODY
+update_release_body_and_changelog() {
 	echo -e
 	DATE_SUBHEADING="### $(date +'%Y-%m-%d')\n\n"
 	RELEASE_BODY_ADDITION="${DATE_SUBHEADING}$1"
 
 	# Put new changelog entries into release-body, add link to changelog
-	echo -e "${RELEASE_BODY_ADDITION}\n\nsee <a href='${GIT_REPO_URL}/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details" > .github/release-body.md
+	echo -e "${RELEASE_BODY_ADDITION}\n\nsee <a href='${GIT_REPO_URL}/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details" >.github/release-body.md
 
 	# Add subheading with release version and date of release
-	echo -e "# <a href='${GIT_REPO_URL}/releases/tag/${NEW_TAG_WITH_V}'>${NEW_TAG_WITH_V}</a>\n${DATE_SUBHEADING}${CHANGELOG_ADDITION}$(cat CHANGELOG.md)" > CHANGELOG.md
+	echo -e "# <a href='${GIT_REPO_URL}/releases/tag/${NEW_TAG_WITH_V}'>${NEW_TAG_WITH_V}</a>\n${DATE_SUBHEADING}${CHANGELOG_ADDITION}$(cat CHANGELOG.md)" >CHANGELOG.md
 
 	# Update changelog to add links to commits [hex:8](url_with_full_commit)
 	# "[aaaaaaaaaabbbbbbbbbbccccccccccddddddddd]" -> "[aaaaaaaa](https:/www.../commit/aaaaaaaaaabbbbbbbbbbccccccccccddddddddd),"
@@ -117,7 +116,7 @@ update_release_body_and_changelog () {
 }
 
 # update version in cargo.toml + docker-compose.yml, to match selected current version
-update_version_number_in_files () {
+update_version_number_in_files() {
 	# Update Cargo.toml version
 	sed -i "s|^version = .*|version = \"${MAJOR}.${MINOR}.${PATCH}\"|" Cargo.toml
 
@@ -131,17 +130,15 @@ update_version_number_in_files () {
 	sed -i -r -E "s=download/v[0-9]+.[0-9]+.[0-9]+=download/v${MAJOR}.${MINOR}.${PATCH}=g" ./docker/Dockerfile
 }
 
-
 # Work out the current version, based on git tags
 # create new semver version based on user input
 # Set MAJOR MINOR PATCH
-check_tag () {
+check_tag() {
 	LATEST_TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
 	echo -e "\nCurrent tag: ${PURPLE}${LATEST_TAG}${RESET}\n"
 	echo -e "${YELLOW}Choose new tag version:${RESET}\n"
-	if [[ $LATEST_TAG =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?$ ]]
-	then
-		IFS="." read -r MAJOR MINOR PATCH <<< "${LATEST_TAG:1}"
+	if [[ $LATEST_TAG =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?$ ]]; then
+		IFS="." read -r MAJOR MINOR PATCH <<<"${LATEST_TAG:1}"
 	else
 		MAJOR="0"
 		MINOR="0"
@@ -151,90 +148,115 @@ check_tag () {
 	OP_MINOR="minor___v$(update_minor)"
 	OP_PATCH="patch___v$(update_patch)"
 	OPTIONS=("$OP_MAJOR" "$OP_MINOR" "$OP_PATCH")
-	select choice in "${OPTIONS[@]}"
-	do
+	select choice in "${OPTIONS[@]}"; do
 		case $choice in
-			"$OP_MAJOR" )
-				MAJOR=$((MAJOR + 1))
-				MINOR=0
-				PATCH=0
-				break;;
-			"$OP_MINOR")
-				MINOR=$((MINOR + 1))
-				PATCH=0
-				break;;
-			"$OP_PATCH")
-				PATCH=$((PATCH + 1))
-				break;;
-			*)
-				error_close "invalid option $REPLY";;
+		"$OP_MAJOR")
+			MAJOR=$((MAJOR + 1))
+			MINOR=0
+			PATCH=0
+			break
+			;;
+		"$OP_MINOR")
+			MINOR=$((MINOR + 1))
+			PATCH=0
+			break
+			;;
+		"$OP_PATCH")
+			PATCH=$((PATCH + 1))
+			break
+			;;
+		*)
+			error_close "invalid option $REPLY"
+			;;
 		esac
 	done
 }
 
-# ask continue, or quit
-ask_continue () {
-	ask_yn "continue"
-	if [[ ! "$(user_input)" =~ ^y$ ]] 
-	then 
-		exit
-	fi
-}
-
-# build for production, as Github action would do
-cross_build() {
-	echo -e "\n${GREEN}cross  build --target aarch64-unknown-linux-musl --release${RESET}"
-	cross build --target aarch64-unknown-linux-musl --release
-}
-
 # run all tests
-cargo_test () {
+cargo_test() {
 	cargo test -- --test-threads=1
 	ask_continue
 }
 
+# Check to see if cross is installed - if not then install
+check_cross() {
+	if ! [ -x "$(command -v cross)" ]; then
+		echo -e "${YELLOW}cargo install cross${RESET}"
+		cargo install cross
+	fi
+}
+
+#  Build for linux arm64
+cargo_build_aarch64_linux() {
+	check_cross
+	echo -e "${YELLOW}cross build --target aarch64-unknown-linux-musl --release${RESET}"
+	cross build --target aarch64-unknown-linux-musl --release
+}
+
+# Build all releases that GitHub workflow would
+# This will download GB's of docker images
+cargo_build_all() {
+	cargo_build_aarch64_linux
+	ask_continue
+}
+
 # $1 text to colourise
-release_continue () {
+release_continue() {
 	echo -e "\n${PURPLE}$1${RESET}"
 	ask_continue
 }
 
-check_typos () {
-	echo -e "\n${PURPLE}checking for typos${RESET}"
+# Check repository for typos
+check_typos() {
+	echo -e "\n${PURPLE}check typos${RESET}"
 	typos
 	ask_continue
 }
 
+#  Make sure the unused lint isn't used
+check_allow_unused() {
+	matches_any=$(find . -type d \( -name .git -o -name target \) -prune -o -type f -exec grep -lE '^#!\[allow\(unused\)\]$' {} +)
+	matches_cargo=$(grep "^unused = \"allow\"" ./Cargo.toml)
+	if [ -n "$matches_any" ]; then
+		echo "\"#[allow(unused)]\" in ${matches_any}"
+		ask_continue
+	elif [ -n "$matches_cargo" ]; then
+		echo "\"unused = \"allow\"\" in Cargo.toml"
+		ask_continue
+	fi
+}
+
 # Full flow to create a new release
 release_flow() {
+	check_allow_unused
 	check_typos
 
 	check_git
 	get_git_remote_url
 
 	cargo_test
-	cross_build
+	cargo_build_all
 
 	cd "${CWD}" || error_close "Can't find ${CWD}"
 	check_tag
-	
+
 	NEW_TAG_WITH_V="v${MAJOR}.${MINOR}.${PATCH}"
 	printf "\nnew tag chosen: %s\n\n" "${NEW_TAG_WITH_V}"
 
 	RELEASE_BRANCH=release-$NEW_TAG_WITH_V
 	echo -e
 	ask_changelog_update
-	
+
 	release_continue "checkout ${RELEASE_BRANCH}"
 	git checkout -b "$RELEASE_BRANCH"
 
 	release_continue "update_version_number_in_files"
 	update_version_number_in_files
-	
-	echo "cargo fmt"
+
+	echo -e "\ncargo fmt"
 	cargo fmt
 
-	echo -e "\n${PURPLE}cargo check${RESET}"
+	echo -e "\n${PURPLE}cargo check${RESET}\n"
 	cargo check
 
 	release_continue "git add ."
@@ -244,9 +266,16 @@ release_flow() {
 	git commit -m "chore: release ${NEW_TAG_WITH_V}"
 
 	release_continue "git checkout main"
-	echo -e "git merge --no-ff \"${RELEASE_BRANCH}\" -m \"chore: merge ${RELEASE_BRANCH} into main\"" 
 	git checkout main
+
+	echo -e "${PURPLE}git pull origin main${RESET}"
+	git pull origin main
+
+	echo -e "${PURPLE}git merge --no-ff \"${RELEASE_BRANCH}\" -m \"chore: merge ${RELEASE_BRANCH} into main\"${RESET}"
 	git merge --no-ff "$RELEASE_BRANCH" -m "chore: merge ${RELEASE_BRANCH} into main"
+
+	echo -e "\n${PURPLE}cargo check${RESET}\n"
+	cargo check
 
 	release_continue "git tag -am \"${RELEASE_BRANCH}\" \"$NEW_TAG_WITH_V\""
 	git tag -am "${RELEASE_BRANCH}" "$NEW_TAG_WITH_V"
@@ -258,7 +287,7 @@ release_flow() {
 	git checkout dev
 
 	release_continue "git merge --no-ff main -m \"chore: merge main into dev\""
-	git merge --no-ff main -m 'chore: merge main into dev'
+	git merge --no-ff main -m "chore: merge main into dev"
 
 	release_continue "git push origin dev"
 	git push origin dev
@@ -267,12 +296,12 @@ release_flow() {
 	git branch -d "$RELEASE_BRANCH"
 }
 
-main() {
-	cmd=(dialog --backtitle "Choose build option" --radiolist "choose" 14 80 16)
+# Choose build targets
+build_choice() {
+	cmd=(dialog --backtitle "Choose option" --radiolist "choose" 14 80 16)
 	options=(
-		1 "build" off
-		2 "test" off
-		3 "release" off
+		1 "aarch64 musl linux" off
+		2 "all" off
 	)
 	choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	exitStatus=$?
@@ -280,22 +309,55 @@ main() {
 	if [ $exitStatus -ne 0 ]; then
 		exit
 	fi
-	for choice in $choices
-	do
+	for choice in $choices; do
 		case $choice in
-			0)
-				exit;;
-			1)
-				cross_build_all
-				main
-				break;;
-			2)
-				cargo_test
-				main
-				break;;
-			3)
-				release_flow
-				break;;
+		0)
+			exit
+			;;
+		1)
+			cargo_build_aarch64_linux
+			exit
+			;;
+		2)
+			cargo_build_all
+			exit
+			;;
+		esac
+	done
+}
+
+main() {
+	cmd=(dialog --backtitle "Choose option" --radiolist "choose" 14 80 16)
+	options=(
+		1 "test" off
+		2 "release" off
+		3 "build" off
+	)
+	choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+	exitStatus=$?
+	clear
+	if [ $exitStatus -ne 0 ]; then
+		exit
+	fi
+	for choice in $choices; do
+		case $choice in
+		0)
+			exit
+			;;
+		1)
+			cargo_test
+			main
+			break
+			;;
+		2)
+			release_flow
+			break
+			;;
+		3)
+			build_choice
+			main
+			break
+			;;
 		esac
 	done
 }
