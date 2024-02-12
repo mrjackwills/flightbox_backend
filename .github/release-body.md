@@ -1,12 +1,15 @@
-### 2023-12-30
+### 2024-02-12
 
 ### Chores
-+ Rust 1.75.0 linting, [990fdf0b5eb57784ef1ca13c5242f65a31061e7b]
-+ Dockerfile alpine bump, [0f3af0e14ddc09c309b5b7090699d1e66ae352dd]
-+ .devcontainer updated, [6de113bb5b83f959e27de79f928c64e6f6d887c6]
-+ dependencies updated, [0edfab87d3a32205582b347814f3df9c18fc9a22]
++ run.sh v0.2.1, [56cc9387971f529fba121e194ba8613ef682c67a]
++ create_release v0.5.5, [5ba7a979726aa7855cb5f630ed8291131ddec455]
++ dependencies updated, [b1ae63785b644b3fddbc212d5998711e5c623b3e]
++ .gitattributes updated, [57b75a230c72f57fa9e454b1bd1e48798fed3db0]
 
 ### Features
-+ run.sh v0.1.0, [d4ff88c3add118627b02f7e92fa1f14e4d7037ff]
++ GitHub action build matrix, [1c8441be6fd04d9713186aff134102270c45b3a7]
+
+### Refactors
++ Dockerfile cleaned up, [437b50537c9cd9e0965bd16df8461d516136a632]
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details
