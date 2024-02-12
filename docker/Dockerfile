@@ -17,7 +17,7 @@ RUN addgroup -g "${DOCKER_GUID}" -S ${DOCKER_APP_GROUP} \
 WORKDIR /app
 
 # This gets automatically updated via create_release.sh
-RUN wget https://github.com/mrjackwills/flightbox_backend/releases/download/v0.1.8/flightbox_linux_aarch64.tar.gz \
+RUN wget https://github.com/mrjackwills/flightbox_backend/releases/download/v0.1.9/flightbox_linux_aarch64.tar.gz \
 	&& tar xzvf flightbox_linux_aarch64.tar.gz flightbox \
 	&& rm flightbox_linux_aarch64.tar.gz
 
