@@ -5,11 +5,6 @@ services:
     build:
       context: /workspaces/pi_client
       dockerfile: docker/Dockerfile
-      args:
-        - DOCKER_UID=${DOCKER_UID}
-        - DOCKER_GUID=${DOCKER_GUID}
-        - DOCKER_TIME_CONT=${DOCKER_TIME_CONT}
-        - DOCKER_TIME_CITY=${DOCKER_TIME_CITY}
     container_name: flightbox
     volumes:
       - /ramdrive/ip.addr:/ip_address/ip.addr:ro
