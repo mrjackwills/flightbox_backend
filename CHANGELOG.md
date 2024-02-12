@@ -4,6 +4,9 @@
 + dependencies updated, [b1ae63785b644b3fddbc212d5998711e5c623b3e]
 + .gitattributes updated, [57b75a230c72f57fa9e454b1bd1e48798fed3db0]
 
+### Features
++ GitHub action build matrix, [1c8441be6fd04d9713186aff134102270c45b3a7]
+
 ### Refactors
 + Dockerfile cleaned up, [437b50537c9cd9e0965bd16df8461d516136a632]
 
