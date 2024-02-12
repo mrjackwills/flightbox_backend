@@ -1,59 +1,24 @@
 #!/bin/bash
 
-# v0.1.0
+# run.sh v0.2.1
 
-# CHANGE
-MONO_NAME='flightbox'
+APP_NAME='flightbox'
 
 RED='\033[0;31m'
 YELLOW='\033[0;33m'
 GREEN='\033[0;32m'
 RESET='\033[0m'
 
-DOCKER_GUID=$(id -g)
-DOCKER_UID=$(id -u)
-DOCKER_TIME_CONT="America"
-DOCKER_TIME_CITY="New_York"
-
 PRO=production
 DEV=dev
 
 error_close() {
-	echo -e "\n${RED}ERROR - EXITED: ${YELLOW}$1${RESET}\n";
+	echo -e "\n${RED}ERROR - EXITED: ${YELLOW}$1${RESET}\n"
 	exit 1
 }
 
-# $1 any variable name
-# $2 variable name
-check_variable() {
-	if [ -z "$1" ]
-	then
-		error_close "Missing variable $2"
-	fi
-}
-
-check_variable "$MONO_NAME" "\$MONO_NAME"
-
-if ! [ -x "$(command -v dialog)" ]; then
-	error_close "dialog is not installed"
-fi
-
-set_base_dir() {
-	local workspace="/workspaces/pi_client"
-	local server="$HOME/${MONO_NAME}"
-	if [[ -d "$workspace" ]]
-	then
-		BASE_DIR="${workspace}"
-	else 
-		BASE_DIR="${server}"
-	fi
-}
-
-set_base_dir
-
-
 # $1 string - question to ask
-ask_yn () {
+ask_yn() {
 	printf "%b%s? [y/N]:%b " "${GREEN}" "$1" "${RESET}"
 }
 
@@ -63,54 +28,55 @@ user_input() {
 	echo "$data"
 }
 
-# Containers
-API="${MONO_NAME}"
+if ! [ -x "$(command -v dialog)" ]; then
+	error_close "dialog is not installed"
+fi
 
-dev_up () {
-	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
-	echo "starting containers: ${API}"
-	DOCKER_GUID=${DOCKER_GUID} \
-	DOCKER_UID=${DOCKER_UID} \
-	DOCKER_TIME_CONT=${DOCKER_TIME_CONT} \
-	DOCKER_TIME_CITY=${DOCKER_TIME_CITY} \
-	docker compose -f dev.docker-compose.yml up --force-recreate --build -d "${API}"
+# $1 any variable name
+# $2 variable name
+check_variable() {
+	if [ -z "$1" ]; then
+		error_close "Missing variable $2"
+	fi
 }
 
-dev_down () {
+check_variable "$APP_NAME" "\$APP_NAME"
+
+set_base_dir() {
+	local workspace="/workspaces/pi_client"
+	local server="$HOME/${APP_NAME}"
+	if [[ -d "$workspace" ]]; then
+		BASE_DIR="${workspace}"
+	else
+		BASE_DIR="${server}"
+	fi
+}
+
+set_base_dir
+
+dev_up() {
 	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
-	DOCKER_GUID=${DOCKER_GUID} \
-	DOCKER_UID=${DOCKER_UID} \
-	DOCKER_TIME_CONT=${DOCKER_TIME_CONT} \
-	DOCKER_TIME_CITY=${DOCKER_TIME_CITY} \
+	echo "starting containers: ${API}"
+	docker compose -f dev.docker-compose.yml up --force-recreate --build -d "${APP_NAME}"
+}
+
+dev_down() {
+	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
 	docker compose -f dev.docker-compose.yml down
 }
 
-production_up () {
+production_up() {
 	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
-DOCKER_GUID=${DOCKER_GUID} \
-	DOCKER_UID=${DOCKER_UID} \
-	DOCKER_TIME_CONT=${DOCKER_TIME_CONT} \
-	DOCKER_TIME_CITY=${DOCKER_TIME_CITY} \
-	DOCKER_BUILDKIT=0 \
 	docker compose -f docker-compose.yml up -d
 }
 
-production_rebuild () {
+production_rebuild() {
 	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
-	DOCKER_GUID=${DOCKER_GUID} \
-	DOCKER_UID=${DOCKER_UID} \
-	DOCKER_TIME_CONT=${DOCKER_TIME_CONT} \
-	DOCKER_TIME_CITY=${DOCKER_TIME_CITY} \
-	DOCKER_BUILDKIT=0 \
 	docker compose -f docker-compose.yml up -d --build
 }
 
-production_down () {
+production_down() {
 	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
-	DOCKER_GUID=${DOCKER_GUID} \
-	DOCKER_UID=${DOCKER_UID} \
-	DOCKER_TIME_CONT=${DOCKER_TIME_CONT} \
-	DOCKER_TIME_CITY=${DOCKER_TIME_CITY} \
 	docker compose -f docker-compose.yml down
 }
 
@@ -156,30 +122,35 @@ main() {
 	if [ $exitStatus -ne 0 ]; then
 		exit
 	fi
-	for choice in $choices
-	do
+	for choice in $choices; do
 		case $choice in
-			0)
-				exit;;
-			1)
-				dev_up
-				break;;
-			2)
-				dev_down
-				break;;
-			3)
-				echo "production up: ${API}"
-				production_up
-				break;;
-			4)
-				production_down
-				break;;
-			5)
-				production_rebuild
-				break;;
-			6)
-				pull_branch
-				break
+		0)
+			exit
+			;;
+		1)
+			dev_up
+			break
+			;;
+		2)
+			dev_down
+			break
+			;;
+		3)
+			echo "production up: ${APP_NAME}"
+			production_up
+			break
+			;;
+		4)
+			production_down
+			break
+			;;
+		5)
+			production_rebuild
+			break
+			;;
+		6)
+			pull_branch
+			break
 			;;
 		esac
 	done

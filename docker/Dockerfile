@@ -5,13 +5,7 @@
 FROM alpine:3.19 AS SETUP
 
 ARG DOCKER_APP_USER=app_user \
-	DOCKER_APP_GROUP=app_group \
-	DOCKER_GUID \
-	DOCKER_UID \
-	DOCKER_TIME_CONT \
-	DOCKER_TIME_CITY
-
-ENV TZ=${DOCKER_TIME_CONT}/${DOCKER_TIME_CITY}
+	DOCKER_APP_GROUP=app_group
 
 RUN addgroup -g "${DOCKER_GUID}" -S ${DOCKER_APP_GROUP} \
 	&& adduser -u ${DOCKER_UID} -S -G ${DOCKER_APP_GROUP} ${DOCKER_APP_USER} \
@@ -21,9 +15,9 @@ RUN addgroup -g "${DOCKER_GUID}" -S ${DOCKER_APP_GROUP} \
 WORKDIR /app
 
 # This gets automatically updated via create_release.sh
-RUN wget https://github.com/mrjackwills/flightbox_backend/releases/download/v0.1.7/flightbox_backend_aarch64.tar.gz \
-	&& tar xzvf flightbox_backend_aarch64.tar.gz flightbox \
-	&& rm flightbox_backend_aarch64.tar.gz
+RUN wget https://github.com/mrjackwills/flightbox_backend/releases/download/v0.1.8/flightbox_aarch64.tar.gz \
+	&& tar xzvf flightbox_aarch64.tar.gz flightbox \
+	&& rm flightbox_aarch64.tar.gz
 
 ##########
 # RUNNER #
@@ -31,12 +25,8 @@ RUN wget https://github.com/mrjackwills/flightbox_backend/releases/download/v0.1
 
 FROM scratch AS RUNNER
 
-ARG DOCKER_TIME_CONT \
-		DOCKER_TIME_CITY \
-		DOCKER_APP_USER=app_user \
-		DOCKER_APP_GROUP=app_group
-
-ENV TZ=${DOCKER_TIME_CONT}/${DOCKER_TIME_CITY}
+ARG DOCKER_APP_USER=app_user \
+	DOCKER_APP_GROUP=app_group
 
 COPY --from=SETUP /app/ /app
 COPY --from=SETUP /etc/group /etc/passwd /etc/

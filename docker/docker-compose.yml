@@ -1,15 +1,10 @@
 version: "3.8"
 services:
   flightbox_client:
-    image: flightbox_client:0.1.7
+    image: flightbox_client:0.1.8
     build:
       context: $HOME/flightbox/
       dockerfile: ./docker/Dockerfile
-      args:
-        - DOCKER_UID=${DOCKER_UID} 
-        - DOCKER_GUID=${DOCKER_GUID} 
-        - DOCKER_TIME_CONT=${DOCKER_TIME_CONT}
-        - DOCKER_TIME_CITY=${DOCKER_TIME_CITY}
     container_name: flightbox_client
     volumes:
       - $HOME/flightbox/docker/.env:/app_env/.env:ro
