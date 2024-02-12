@@ -33,6 +33,14 @@ user_input() {
 	echo "$data"
 }
 
+# ask continue, or quit
+ask_continue() {
+	ask_yn "continue"
+	if [[ ! "$(user_input)" =~ ^y$ ]]; then
+		exit
+	fi
+}
+
 # semver major update
 update_major() {
 	local bumped_major
