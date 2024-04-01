@@ -1,7 +1,7 @@
 
 services:
   flightbox:
-    image: flightbox:0.1.9
+    image: flightbox:0.1.10
     build:
       context: /workspaces/pi_client
       dockerfile: docker/Dockerfile
