@@ -24,7 +24,7 @@ fn setup_tracing(app_env: &AppEnv) {
 async fn main() {
     let app_env = parse_env::AppEnv::get_env();
     setup_tracing(&app_env);
-	tracing::info!("{} - {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+    tracing::info!("{} - {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
     Cron::init(&app_env);
     open_connection(app_env).await;
 }
