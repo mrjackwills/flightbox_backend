@@ -3,6 +3,7 @@
 
 ### Features
 + separate version in Dockerfile, [d20dcaa10edf2ed26a1966a68c354ded9f171c75]
++ print name & version at start, [af76fe76dd1111d9aa6d6834e41ae7298214a526]
 
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.10'>v0.1.10</a>
 ### 2024-04-01
