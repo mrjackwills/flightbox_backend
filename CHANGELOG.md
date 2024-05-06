@@ -2,7 +2,7 @@
 +  dependencies updated, [6adf53ba50cd06408619e75dfd7bb59b1391581a], [3f4e354180851b2fbf3ca95eb0940158e454829a]
 
 ### Features
-+ seperate version in Dockerfile, [d20dcaa10edf2ed26a1966a68c354ded9f171c75]
++ separate version in Dockerfile, [d20dcaa10edf2ed26a1966a68c354ded9f171c75]
 
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.10'>v0.1.10</a>
 ### 2024-04-01
