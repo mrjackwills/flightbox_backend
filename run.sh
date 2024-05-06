@@ -44,7 +44,7 @@ check_variable "$APP_NAME" "\$APP_NAME"
 
 set_base_dir() {
 	local workspace="/workspaces/pi_client"
-	local server="$HOME/${APP_NAME}"
+	local server="$HOME/${APP_NAME}.d"
 	if [[ -d "$workspace" ]]; then
 		BASE_DIR="${workspace}"
 	else
