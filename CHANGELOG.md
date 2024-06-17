@@ -1,8 +1,11 @@
+# <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.12'>v0.1.12</a>
+### 2024-06-17
+
 ### Chores
-+ dependencies updated, [d7099e66fdec7a1ae0204ff32b6d3f291fb96e4f]
++ dependencies updated, [d7099e66](https://github.com/mrjackwills/flightbox_backend/commit/d7099e66fdec7a1ae0204ff32b6d3f291fb96e4f)
 
 ### Fixes
-+ Docker directory location, [3820b7d5b2e617183f664083648f0128538004bd]
++ Docker directory location, [3820b7d5](https://github.com/mrjackwills/flightbox_backend/commit/3820b7d5b2e617183f664083648f0128538004bd)
 
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.11'>v0.1.11</a>
 ### 2024-05-06
