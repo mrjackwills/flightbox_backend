@@ -1,13 +1,13 @@
 
 services:
   flightbox_client:
-    image: flightbox_client:0.1.11
+    image: flightbox_client:0.1.12
     build:
-      context: $HOME/flightbox/
+      context: $HOME/flightbox.d/
       dockerfile: ./docker/Dockerfile
     container_name: flightbox_client
     volumes:
-      - $HOME/flightbox/docker/.env:/app_env/.env:ro
+      - $HOME/flightbox.d/docker/.env:/app_env/.env:ro
       - /ramdrive/ip.addr:/ip_address/ip.addr:ro
       - /tmp/.X11-unix:/tmp/.X11-unix
     cap_drop:
