@@ -1,9 +1,12 @@
+# <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.13'>v0.1.13</a>
+### 2024-07-25
+
 ### Chores
-+ .devcontainer updated, [6b9dbd6faa210179dc64900151b802cd5284a9bc]
-+ dependencies updated, [1c41305bc3f11cf21270496df9f761963ffddab4]
++ .devcontainer updated, [6b9dbd6f](https://github.com/mrjackwills/flightbox_backend/commit/6b9dbd6faa210179dc64900151b802cd5284a9bc)
++ dependencies updated, [1c41305b](https://github.com/mrjackwills/flightbox_backend/commit/1c41305bc3f11cf21270496df9f761963ffddab4)
 
 ### Fixes
-+ run.sh, [8f3267f4c0e25bc0fd4549e837d441e0efda69fe]
++ run.sh, [8f3267f4](https://github.com/mrjackwills/flightbox_backend/commit/8f3267f4c0e25bc0fd4549e837d441e0efda69fe)
 
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.12'>v0.1.12</a>
 ### 2024-06-17

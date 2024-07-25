@@ -1,9 +1,10 @@
-### 2024-06-17
+### 2024-07-25
 
 ### Chores
-+ dependencies updated, [d7099e66fdec7a1ae0204ff32b6d3f291fb96e4f]
++ .devcontainer updated, [6b9dbd6faa210179dc64900151b802cd5284a9bc]
++ dependencies updated, [1c41305bc3f11cf21270496df9f761963ffddab4]
 
 ### Fixes
-+ Docker directory location, [3820b7d5b2e617183f664083648f0128538004bd]
++ run.sh, [8f3267f4c0e25bc0fd4549e837d441e0efda69fe]
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details
