@@ -226,7 +226,7 @@ dependencies = [
 
 [[package]]
 name = "flightbox"
-version = "0.1.12"
+version = "0.1.13"
 dependencies = [
  "dotenvy",
  "futures-util",
