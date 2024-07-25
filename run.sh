@@ -42,41 +42,34 @@ check_variable() {
 
 check_variable "$APP_NAME" "\$APP_NAME"
 
-set_base_dir() {
-	local workspace="/workspaces/pi_client"
-	local server="$HOME/${APP_NAME}.d"
-	if [[ -d "$workspace" ]]; then
-		BASE_DIR="${workspace}"
-	else
-		BASE_DIR="${server}"
-	fi
-}
+# Get the directory of the script
+APP_DIR=$(dirname "$(readlink -f "$0")")
 
-set_base_dir
+DOCKER_DIR="${APP_DIR}/docker"
 
 dev_up() {
-	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
+	cd "${DOCKER_DIR}" || error_close "${DOCKER_DIR} doesn't exist"
 	echo "starting containers: ${API}"
 	docker compose -f dev.docker-compose.yml up --force-recreate --build -d "${APP_NAME}"
 }
 
 dev_down() {
-	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
+	cd "${DOCKER_DIR}" || error_close "${DOCKER_DIR} doesn't exist"
 	docker compose -f dev.docker-compose.yml down
 }
 
 production_up() {
-	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
+	cd "${DOCKER_DIR}" || error_close "${DOCKER_DIR} doesn't exist"
 	docker compose -f docker-compose.yml up -d
 }
 
 production_rebuild() {
-	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
+	cd "${DOCKER_DIR}" || error_close "${DOCKER_DIR} doesn't exist"
 	docker compose -f docker-compose.yml up -d --build
 }
 
 production_down() {
-	cd "${BASE_DIR}/docker" || error_close "${BASE_DIR} doesn't exist"
+	cd "${DOCKER_DIR}" || error_close "${DOCKER_DIR} doesn't exist"
 	docker compose -f docker-compose.yml down
 }
 
