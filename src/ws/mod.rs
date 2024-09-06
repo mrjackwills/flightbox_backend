@@ -41,11 +41,7 @@ impl AutoClose {
 }
 
 /// handle each incoming ws message
-async fn incoming_ws_message(
-    mut reader: WSReader,
-    ws_sender: WSSender,
-    mut auto_close: AutoClose,
-) {
+async fn incoming_ws_message(mut reader: WSReader, ws_sender: WSSender, mut auto_close: AutoClose) {
     while let Ok(Some(message)) = reader.try_next().await {
         match message {
             Message::Text(message) => {
