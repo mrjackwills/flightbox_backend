@@ -31,7 +31,7 @@ impl WSSender {
     }
 
     /// Handle text message, in this program they will all be json text
-    pub async fn on_text(&mut self, message: String) {
+    pub async fn on_text(&self, message: String) {
         if let Some(data) = to_struct(&message) {
             match data {
                 MessageValues::Invalid(error) => error!("{error:?}"),
@@ -60,7 +60,7 @@ impl WSSender {
     // }
 
     /// Send a message to the socket
-    async fn send_ws_response(&mut self, response: Response, cache: Option<bool>, unique: String) {
+    async fn send_ws_response(&self, response: Response, cache: Option<bool>, unique: String) {
         match self
             .writer
             .lock()
@@ -77,14 +77,14 @@ impl WSSender {
     }
 
     /// Send status of flightbox backend machine to client
-    pub async fn send_status(&mut self, unique: String) {
+    pub async fn send_status(&self, unique: String) {
         let info = SysInfo::new(&self.app_env, &self.connected_instant).await;
         let response = Response::Status(info);
         self.send_ws_response(response, Some(true), unique).await;
     }
 
     /// close connection, uses a 2 second timeout
-    pub async fn close(&mut self) {
+    pub async fn close(&self) {
         tokio::time::timeout(
             std::time::Duration::from_secs(2),
             self.writer.lock().await.close(),

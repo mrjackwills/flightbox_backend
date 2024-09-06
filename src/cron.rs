@@ -18,7 +18,7 @@ impl Cron {
     /// Create a basic cron job, spawn into own tokio thread
     pub fn init(app_env: &AppEnv) {
         let adsbdb = adsbdb_response::Adsbdb::new(app_env);
-        let mut inner = Self {
+        let inner = Self {
             adsbdb,
             sleep_duration: std::time::Duration::from_secs(ONE_MINUTE_IN_SEC * 5),
         };
@@ -38,7 +38,7 @@ impl Cron {
     }
 
     /// Get current flights every 5 minutes, just to build up the adsbdb database and cache
-    async fn croner(&mut self) {
+    async fn croner(&self) {
         loop {
             let now = Instant::now();
             self.execute().await;

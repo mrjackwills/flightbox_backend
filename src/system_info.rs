@@ -98,7 +98,6 @@ impl SysInfo {
     }
 
     /// Turn screen on or off, use app_env to see whether in WAYLAND or X11
-    #[allow(clippy::cognitive_complexity)]
     pub fn toggle_screen(app_env: &AppEnv, on: bool) {
         if app_env.wayland {
             let suffix = if on { "0" } else { "1" };
