@@ -98,7 +98,7 @@ impl AppEnv {
 /// Run tests with
 ///
 /// cargo watch -q -c -w src/ -x 'test env_ -- --nocapture'
-#[allow(clippy::unwrap_used)]
+#[expect(clippy::unwrap_used)]
 #[cfg(test)]
 mod tests {
     use dotenvy::from_path;
