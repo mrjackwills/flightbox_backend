@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use tokio::fs::read_to_string;
 use tracing::{error, trace};
 
-use crate::parse_env::AppEnv;
+use crate::{parse_env::AppEnv, S};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SysInfo {
@@ -87,7 +87,7 @@ impl SysInfo {
                                 .to_owned()
                         })
                         .collect::<Vec<_>>();
-                    next_char.first() == Some(&"n".to_owned())
+                    next_char.first() == Some(&S!("n"))
                 }
                 Err(e) => {
                     error!("XSET error:: {e:?}");
@@ -157,20 +157,22 @@ impl SysInfo {
 mod tests {
     use std::time::SystemTime;
 
+    use crate::{C, S};
+
     use super::*;
 
     fn setup_test_env(location_ip_address: String) -> AppEnv {
-        let na = String::from("na");
+        let na = S!("na");
         AppEnv {
             location_ip_address,
             log_level: tracing::Level::INFO,
             start_time: SystemTime::now(),
-            url_adsbdb: na.clone(),
-            url_tar0190: na.clone(),
+            url_adsbdb: C!(na),
+            url_tar0190: C!(na),
             wayland: true,
-            ws_address: na.clone(),
-            ws_api_key: na.clone(),
-            ws_password: na.clone(),
+            ws_address: C!(na),
+            ws_api_key: C!(na),
+            ws_password: C!(na),
             ws_token_address: na,
         }
     }
@@ -178,7 +180,7 @@ mod tests {
     #[tokio::test]
     async fn sysinfo_getuptime_ok() {
         // FIXTURES
-        setup_test_env(String::new());
+        setup_test_env(S!());
 
         // ACTIONS
         let result = SysInfo::get_uptime().await;
@@ -192,7 +194,7 @@ mod tests {
     #[tokio::test]
     async fn sysinfo_get_ip_na() {
         // FIXTURES
-        let app_env = setup_test_env(String::new());
+        let app_env = setup_test_env(S!());
 
         // ACTIONS
         let result = SysInfo::get_ip(&app_env).await;
@@ -204,7 +206,7 @@ mod tests {
     #[tokio::test]
     async fn sysinfo_get_ip_ok() {
         // FIXTURES
-        let app_env = setup_test_env("./ip.addr".to_owned());
+        let app_env = setup_test_env(S!("./ip.addr"));
 
         // ACTIONS
         let result = SysInfo::get_ip(&app_env).await;
@@ -216,7 +218,7 @@ mod tests {
     #[tokio::test]
     async fn sysinfo_screen_status_ok() {
         // FIXTURES
-        let app_env = setup_test_env(String::new());
+        let app_env = setup_test_env(S!());
 
         // ACTIONS
         let result = SysInfo::screen_status(&app_env).await;
@@ -231,7 +233,7 @@ mod tests {
     #[tokio::test]
     async fn sysinfo_get_sysinfo_ok() {
         // FIXTURES
-        let app_env = setup_test_env("./ip.addr".to_owned());
+        let app_env = setup_test_env(S!("./ip.addr"));
         tokio::time::sleep(std::time::Duration::from_secs(1)).await;
 
         // let now = Instant::now();

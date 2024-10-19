@@ -1,7 +1,7 @@
 use reqwest::Client;
 use serde::{Deserialize, Deserializer, Serialize};
 
-use crate::{app_error::AppError, parse_env::AppEnv};
+use crate::{app_error::AppError, parse_env::AppEnv, C};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Aircraft {
@@ -100,8 +100,8 @@ pub struct Adsbdb {
 impl Adsbdb {
     pub fn new(app_env: &AppEnv) -> Self {
         Self {
-            aircraft_url: app_env.url_tar0190.clone(),
-            adsbdb_url: app_env.url_adsbdb.clone(),
+            aircraft_url: C!(app_env.url_tar0190),
+            adsbdb_url: C!(app_env.url_adsbdb),
         }
     }
 
@@ -161,7 +161,7 @@ impl Adsbdb {
         for aircraft in current_flights.aircraft {
             handles.push(tokio::spawn(Self::adsbdb_data(
                 aircraft,
-                self.adsbdb_url.clone(),
+                C!(self.adsbdb_url),
             )));
         }
         let mut result = vec![];
