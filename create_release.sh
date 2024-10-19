@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# rust create_release v0.5.5
+# rust create_release v0.6.0
+# 2024-10-19
 
 STAR_LINE='****************************************'
 CWD=$(pwd)
@@ -23,20 +24,24 @@ if ! [ -x "$(command -v dialog)" ]; then
 fi
 
 # $1 string - question to ask
+# Ask a yes no question, only accepts `y` or `n` as a valid answer, returns 0 for yes, 1 for no
 ask_yn() {
-	printf "%b%s? [y/N]:%b " "${GREEN}" "$1" "${RESET}"
-}
-
-# return user input
-user_input() {
-	read -r data
-	echo "$data"
+	while true; do
+		printf "\n%b%s? [y/N]:%b " "${GREEN}" "$1" "${RESET}"
+		read -r answer
+		if [[ "$answer" == "y" ]]; then
+			return 0
+		elif [[ "$answer" == "n" ]]; then
+			return 1
+		else
+			echo -e "${RED}\nPlease enter 'y' or 'n'${RESET}"
+		fi
+	done
 }
 
 # ask continue, or quit
 ask_continue() {
-	ask_yn "continue"
-	if [[ ! "$(user_input)" =~ ^y$ ]]; then
+	if ! ask_yn "continue"; then
 		exit
 	fi
 }
@@ -92,8 +97,7 @@ ask_changelog_update() {
 	RELEASE_BODY_TEXT=$(sed '/# <a href=/Q' CHANGELOG.md)
 	printf "%s" "$RELEASE_BODY_TEXT"
 	printf "\n%s\n" "${STAR_LINE}"
-	ask_yn "accept release body"
-	if [[ "$(user_input)" =~ ^y$ ]]; then
+	if ask_yn "accept release body"; then
 		update_release_body_and_changelog "$RELEASE_BODY_TEXT"
 	else
 		exit
@@ -194,7 +198,7 @@ check_cross() {
 	fi
 }
 
-#  Build for linux arm64
+# Build for linux arm64
 cargo_build_aarch64_linux() {
 	check_cross
 	echo -e "${YELLOW}cross build --target aarch64-unknown-linux-musl --release${RESET}"
@@ -221,7 +225,7 @@ check_typos() {
 	ask_continue
 }
 
-#  Make sure the unused lint isn't used
+# Make sure the unused lint isn't used
 check_allow_unused() {
 	matches_any=$(find . -type d \( -name .git -o -name target \) -prune -o -type f -exec grep -lE '^#!\[allow\(unused\)\]$' {} +)
 	matches_cargo=$(grep "^unused = \"allow\"" ./Cargo.toml)

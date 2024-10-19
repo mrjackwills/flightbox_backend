@@ -103,12 +103,14 @@ impl AppEnv {
 mod tests {
     use dotenvy::from_path;
 
+    use crate::S;
+
     use super::*;
 
     #[test]
     fn env_missing_env() {
         let mut map = HashMap::new();
-        map.insert("not_fish".to_owned(), "not_fish".to_owned());
+        map.insert(S!("not_fish"), S!("not_fish"));
         // ACTION
         let result = AppEnv::parse_string("fish", &map);
 
@@ -121,7 +123,7 @@ mod tests {
     fn env_parse_string_valid() {
         // FIXTURES
         let mut map = HashMap::new();
-        map.insert("RANDOM_STRING".to_owned(), "123".to_owned());
+        map.insert(S!("RANDOM_STRING"), S!("123"));
 
         // ACTION
         let result = AppEnv::parse_string("RANDOM_STRING", &map).unwrap();
@@ -131,7 +133,7 @@ mod tests {
 
         // FIXTURES
         let mut map = HashMap::new();
-        map.insert("RANDOM_STRING".to_owned(), "hello_world".to_owned());
+        map.insert(S!("RANDOM_STRING"), S!("hello_world"));
 
         // ACTION
         let result = AppEnv::parse_string("RANDOM_STRING", &map).unwrap();
@@ -142,7 +144,7 @@ mod tests {
     #[test]
     fn env_parse_log_valid() {
         // FIXTURES
-        let map = HashMap::from([("RANDOM_STRING".to_owned(), "123".to_owned())]);
+        let map = HashMap::from([(S!("RANDOM_STRING"), S!("123"))]);
 
         // ACTION
         let result = AppEnv::parse_log(&map);
@@ -151,7 +153,7 @@ mod tests {
         assert_eq!(result, tracing::Level::INFO);
 
         // FIXTURES
-        let map = HashMap::from([("LOG_DEBUG".to_owned(), "false".to_owned())]);
+        let map = HashMap::from([(S!("LOG_DEBUG"), S!("false"))]);
 
         // ACTION
         let result = AppEnv::parse_log(&map);
@@ -160,7 +162,7 @@ mod tests {
         assert_eq!(result, tracing::Level::INFO);
 
         // FIXTURES
-        let map = HashMap::from([("LOG_TRACE".to_owned(), "false".to_owned())]);
+        let map = HashMap::from([(S!("LOG_TRACE"), S!("false"))]);
 
         // ACTION
         let result = AppEnv::parse_log(&map);
@@ -170,8 +172,8 @@ mod tests {
 
         // FIXTURES
         let map = HashMap::from([
-            ("LOG_DEBUG".to_owned(), "false".to_owned()),
-            ("LOG_TRACE".to_owned(), "false".to_owned()),
+            (S!("LOG_DEBUG"), S!("false")),
+            (S!("LOG_TRACE"), S!("false")),
         ]);
 
         // ACTION
@@ -182,8 +184,8 @@ mod tests {
 
         // FIXTURES
         let map = HashMap::from([
-            ("LOG_DEBUG".to_owned(), "true".to_owned()),
-            ("LOG_TRACE".to_owned(), "false".to_owned()),
+            (S!("LOG_DEBUG"), S!("true")),
+            (S!("LOG_TRACE"), S!("false")),
         ]);
 
         // ACTION
@@ -193,10 +195,7 @@ mod tests {
         assert_eq!(result, tracing::Level::DEBUG);
 
         // FIXTURES
-        let map = HashMap::from([
-            ("LOG_DEBUG".to_owned(), "true".to_owned()),
-            ("LOG_TRACE".to_owned(), "true".to_owned()),
-        ]);
+        let map = HashMap::from([(S!("LOG_DEBUG"), S!("true")), (S!("LOG_TRACE"), S!("true"))]);
 
         // ACTION
         let result = AppEnv::parse_log(&map);
@@ -206,8 +205,8 @@ mod tests {
 
         // FIXTURES
         let map = HashMap::from([
-            ("LOG_DEBUG".to_owned(), "false".to_owned()),
-            ("LOG_TRACE".to_owned(), "true".to_owned()),
+            (S!("LOG_DEBUG"), S!("false")),
+            (S!("LOG_TRACE"), S!("true")),
         ]);
 
         // ACTION
@@ -221,9 +220,9 @@ mod tests {
     fn env_parse_boolean_ok() {
         // FIXTURES
         let mut map = HashMap::new();
-        map.insert("valid_true".to_owned(), "true".to_owned());
-        map.insert("valid_false".to_owned(), "false".to_owned());
-        map.insert("invalid_but_false".to_owned(), "as".to_owned());
+        map.insert(S!("valid_true"), S!("true"));
+        map.insert(S!("valid_false"), S!("false"));
+        map.insert(S!("invalid_but_false"), S!("as"));
 
         // ACTION
         let result01 = AppEnv::parse_boolean("valid_true", &map);

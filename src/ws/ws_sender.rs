@@ -7,6 +7,7 @@ use tracing::{error, trace};
 use crate::adsbdb_response::Adsbdb;
 use crate::system_info::SysInfo;
 use crate::ws_messages::{MessageValues, ParsedMessage, Response, StructuredResponse};
+use crate::C;
 use crate::{parse_env::AppEnv, ws_messages::to_struct};
 
 use super::WSWriter;
@@ -24,7 +25,7 @@ impl WSSender {
         let adsbdb = Adsbdb::new(app_env);
         Self {
             adsbdb,
-            app_env: app_env.clone(),
+            app_env: C!(app_env),
             connected_instant,
             writer,
         }
