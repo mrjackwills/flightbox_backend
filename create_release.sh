@@ -198,7 +198,7 @@ check_cross() {
 	fi
 }
 
-#  Build for linux arm64
+# Build for linux arm64
 cargo_build_aarch64_linux() {
 	check_cross
 	echo -e "${YELLOW}cross build --target aarch64-unknown-linux-musl --release${RESET}"
@@ -225,7 +225,7 @@ check_typos() {
 	ask_continue
 }
 
-#  Make sure the unused lint isn't used
+# Make sure the unused lint isn't used
 check_allow_unused() {
 	matches_any=$(find . -type d \( -name .git -o -name target \) -prune -o -type f -exec grep -lE '^#!\[allow\(unused\)\]$' {} +)
 	matches_cargo=$(grep "^unused = \"allow\"" ./Cargo.toml)

@@ -33,7 +33,7 @@ cross build --target aarch64-unknown-linux-musl --release
 <!-- aarch64-unknown-linux-musl -->
 ```bash
 # Watch
-cargo watch -q -c -w src/ -x 'test  -- --test-threads=1 --nocapture'
+cargo watch -q -c -w src/ -x 'test -- --test-threads=1 --nocapture'
 
 # Run all 
 cargo test -- --test-threads=1 --nocapture
