@@ -229,7 +229,7 @@ dependencies = [
 
 [[package]]
 name = "flightbox"
-version = "0.1.14"
+version = "0.1.15"
 dependencies = [
  "dotenvy",
  "futures-util",

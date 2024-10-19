@@ -1,8 +1,12 @@
-### 2024-09-06
+### 2024-10-19
 
 ### Chores
-+ Rust 1.81.0 linting, [faf8a03b65d399c612bc6282fce60df779dbc0d9]
-+ .devcontainer updated, [3d33b3b4c8d3ae765f1543519f32feefa96fbe15]
-+ dependencies updated, [5146a118b0ec923047308f23364902d257fe30f1]
++ dependencies updated, [ff6c721d2368dad760fe18c1cf2ecc11c1567bb0]
++ create_release.sh updated, [00adba131525ae4940802095ccc2e38b25b8fb24]
++ run.sh updated, [4b7e8a5f373083d018622698ec5b912375753352]
++ .devcontainer updated, [150ba7472a9808d659d7d0a4f87fdc3c5742eef9]
+
+### Features
++ S! and C! macros, [342fa45249a558bff5a5f8a31e91b503e92a1c79]
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details
