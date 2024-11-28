@@ -1,7 +1,7 @@
 #########
 # SETUP #
 #########
-FROM alpine:3.19 AS SETUP
+FROM alpine:3.19 AS setup
 
 ARG DOCKER_APP_USER=app_user \
 DOCKER_APP_GROUP=app_group \
@@ -26,14 +26,14 @@ RUN wget "https://github.com/mrjackwills/flightbox_backend/releases/download/${F
 # RUNNER #
 ##########
 
-FROM scratch AS RUNNER
+FROM scratch
 
 ARG DOCKER_APP_USER=app_user \
 	DOCKER_APP_GROUP=app_group
 
-COPY --from=SETUP /app/ /app
-COPY --from=SETUP /etc/group /etc/passwd /etc/
-COPY --from=SETUP /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=setup /app/ /app
+COPY --from=setup /etc/group /etc/passwd /etc/
+COPY --from=setup /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 USER ${DOCKER_APP_USER}
 
