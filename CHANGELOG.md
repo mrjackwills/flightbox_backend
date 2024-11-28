@@ -1,3 +1,16 @@
+# <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.16'>v0.1.16</a>
+### 2024-11-28
+
+### Chores
++ Dockerfile command case, [f03976ee](https://github.com/mrjackwills/flightbox_backend/commit/f03976ee2de2e9b818e4791ddeadb4ae75ad4760)
++ dependencies updated, [b2bf1d05](https://github.com/mrjackwills/flightbox_backend/commit/b2bf1d059af875b0d8c6b55253d762a236cd3475)
+
+### Features
++ Spawn open_connection, [a93b3191](https://github.com/mrjackwills/flightbox_backend/commit/a93b31910e167c76f303be927feb14a3700e0aea)
+
+### Refactors
++ dead code removed, [fb309aca](https://github.com/mrjackwills/flightbox_backend/commit/fb309acafbb356ce75a9f991ed48c4b6bae8821e)
+
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.15'>v0.1.15</a>
 ### 2024-10-19
 

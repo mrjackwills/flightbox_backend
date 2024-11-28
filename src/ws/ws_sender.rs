@@ -54,12 +54,6 @@ impl WSSender {
         }
     }
 
-    /// Restart by force quitting, and assuming running in an auto-restart container or systemd
-    // async fn restart(&mut self) {
-    //     self.close().await;
-    //     process::exit(0);
-    // }
-
     /// Send a message to the socket
     async fn send_ws_response(&self, response: Response, cache: Option<bool>, unique: String) {
         match self

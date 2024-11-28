@@ -42,5 +42,5 @@ async fn main() {
     setup_tracing(&app_env);
     tracing::info!("{} - {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
     Cron::init(&app_env);
-    open_connection(app_env).await;
+    tokio::spawn(open_connection(app_env)).await.ok();
 }
