@@ -1,6 +1,9 @@
+# <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.17'>v0.1.17</a>
+### 2025-01-12
+
 ### Chores
-+ dependencies updated, [4a03aa1a80f7d8a41acc455622e58724bbbd2329]
-+ Rust 1.84 linting, [8554ea845bc3f338bf86e6658a377da6296a79fd]
++ dependencies updated, [4a03aa1a](https://github.com/mrjackwills/flightbox_backend/commit/4a03aa1a80f7d8a41acc455622e58724bbbd2329)
++ Rust 1.84 linting, [8554ea84](https://github.com/mrjackwills/flightbox_backend/commit/8554ea845bc3f338bf86e6658a377da6296a79fd)
 
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.1.16'>v0.1.16</a>
 ### 2024-11-28
