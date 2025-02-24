@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use tokio::fs::read_to_string;
 use tracing::{error, trace};
 
-use crate::{parse_env::AppEnv, S};
+use crate::{S, parse_env::AppEnv};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SysInfo {
