@@ -1,7 +1,7 @@
 use reqwest::Client;
 use serde::{Deserialize, Deserializer, Serialize};
 
-use crate::{app_error::AppError, parse_env::AppEnv, C};
+use crate::{C, app_error::AppError, parse_env::AppEnv};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Aircraft {

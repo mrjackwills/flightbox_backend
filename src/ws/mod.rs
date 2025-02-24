@@ -4,16 +4,16 @@ mod connection_details;
 use connect::ws_upgrade;
 use connection_details::ConnectionDetails;
 use futures_util::{
+    StreamExt, TryStreamExt,
     lock::Mutex,
     stream::{SplitSink, SplitStream},
-    StreamExt, TryStreamExt,
 };
 use std::sync::Arc;
 use tokio::{net::TcpStream, task::JoinHandle};
-use tokio_tungstenite::{self, tungstenite::Message, MaybeTlsStream, WebSocketStream};
+use tokio_tungstenite::{self, MaybeTlsStream, WebSocketStream, tungstenite::Message};
 use tracing::{error, info};
 
-use crate::{parse_env::AppEnv, C};
+use crate::{C, parse_env::AppEnv};
 
 use crate::ws::ws_sender::WSSender;
 
