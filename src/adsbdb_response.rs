@@ -1,3 +1,5 @@
+use std::fmt::Write;
+
 use reqwest::Client;
 use serde::{Deserialize, Deserializer, Serialize};
 
@@ -135,7 +137,7 @@ impl Adsbdb {
 
         // if callsign add callsign to url
         if let Some(callsign) = aircraft.flight.as_ref() {
-            url.push_str(&format!("?callsign={callsign}"));
+            write!(&mut url, "?callsign={callsign}").ok();
         }
 
         let response = Self::get_client()?
