@@ -1,7 +1,7 @@
 
 services:
   flightbox_client:
-    image: flightbox_client:0.2.0
+    image: flightbox_client:0.2.1
     build:
       context: $HOME/flightbox.d/
       dockerfile: ./docker/Dockerfile
