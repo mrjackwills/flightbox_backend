@@ -41,12 +41,11 @@ impl SysInfo {
         let ip = read_to_string(&app_env.location_ip_address)
             .await
             .unwrap_or_else(|_| NA.into());
-        let output = if ip.len() > 1 {
+        if ip.len() > 1 {
             ip.trim().to_owned()
         } else {
             NA.into()
-        };
-        output
+        }
     }
 
     /// Wayland, get screen status, defaults to false
