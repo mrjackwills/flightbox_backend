@@ -86,6 +86,7 @@ git_pull_branch() {
 	git fetch --tags
 	latest_tag=$(git tag | sort -V | tail -n 1)
 	git checkout -b "$latest_tag"
+	sleep 10
 }
 
 pull_branch() {
