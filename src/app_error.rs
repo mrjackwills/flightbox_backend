@@ -11,7 +11,7 @@ pub enum AppError {
     ReqwestError(#[from] reqwest::Error),
     #[error("thread error")]
     ThreadError(#[from] JoinError),
-	 #[error("WS Connect - '{0}'")]
+    #[error("WS Connect - '{0}'")]
     TungsteniteConnect(String),
     #[error("Invalid WS Status Code")]
     WsStatus,
