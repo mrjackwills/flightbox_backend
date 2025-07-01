@@ -1,3 +1,7 @@
+### CHores
++ dependencies updated, [592d29a4184a46979981eb7331a5b73c2eb103d9]
++ create_release.sh updated, [0fed09b22b3b44aea1ffca6ec0eff5e71c9344b9]
+
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.2.2'>v0.2.2</a>
 ### 2025-05-22
 
