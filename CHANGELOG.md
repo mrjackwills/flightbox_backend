@@ -1,7 +1,10 @@
+# <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.2.3'>v0.2.3</a>
+### 2025-07-01
+
 ### Chores
-+ dependencies updated, [592d29a4184a46979981eb7331a5b73c2eb103d9]
-+ create_release.sh updated, [0fed09b22b3b44aea1ffca6ec0eff5e71c9344b9]
-+ _typos.toml added, [84902943506d9a3c9cd31dd6eaf367b7286a79c9]
++ dependencies updated, [592d29a4](https://github.com/mrjackwills/flightbox_backend/commit/592d29a4184a46979981eb7331a5b73c2eb103d9)
++ create_release.sh updated, [0fed09b2](https://github.com/mrjackwills/flightbox_backend/commit/0fed09b22b3b44aea1ffca6ec0eff5e71c9344b9)
++ _typos.toml added, [84902943](https://github.com/mrjackwills/flightbox_backend/commit/84902943506d9a3c9cd31dd6eaf367b7286a79c9)
 
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.2.2'>v0.2.2</a>
 ### 2025-05-22
