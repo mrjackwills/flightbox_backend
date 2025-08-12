@@ -1,8 +1,7 @@
-### 2025-07-01
+### 2025-08-12
 
 ### Chores
-+ dependencies updated, [592d29a4184a46979981eb7331a5b73c2eb103d9]
-+ create_release.sh updated, [0fed09b22b3b44aea1ffca6ec0eff5e71c9344b9]
-+ _typos.toml added, [84902943506d9a3c9cd31dd6eaf367b7286a79c9]
++ dependencies updated, [0d9b8a69ab5f137ba2e4af0787917f3750c48d69]
++ .devcontainer update, [1cb4251c34192a5246a70ea56e00db614ed0b56e]
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details
