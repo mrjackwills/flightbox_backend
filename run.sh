@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# run.sh v0.2.1
-# 2024-10-19
+# run.sh v0.2.2
+# 2025-08-12
 
 APP_NAME='flightbox'
 
@@ -90,6 +90,8 @@ git_pull_branch() {
 }
 
 pull_branch() {
+	current_version=$(git tag | sort -V | tail -n 1)
+	echo -e "current version: ${YELLOW}${current_version}${RESET}"
 	GIT_CLEAN=$(git status --porcelain)
 	if [ -n "$GIT_CLEAN" ]; then
 		echo -e "\n${RED}GIT NOT CLEAN${RESET}\n"
