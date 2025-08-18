@@ -47,8 +47,6 @@ impl WSSender {
                             error!("get_current_flights::{e:?}");
                         }
                     },
-                    ParsedMessage::On => SysInfo::toggle_screen(&self.app_env, true),
-                    ParsedMessage::Off => SysInfo::toggle_screen(&self.app_env, false),
                 },
             }
         }

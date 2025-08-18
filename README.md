@@ -22,6 +22,12 @@
 ### Requirements
 Built specifically to work in conjunction with [this](https://mikenye.gitbook.io/ads-b/intro/overview)
 
+``` bash
+# save ipaddress into ramdrive
+@reboot ip addr show wlp2s0 | grep -Po 'inet \K[\d.]+' > /ramdrive/ip.addr
+* * * * * ip addr show wlp2s0 | grep -Po 'inet \K[\d.]+' > /ramdrive/ip.addr
+```
+
 ### Build
 pi 4 64bit
 
@@ -37,21 +43,4 @@ cargo watch -q -c -w src/ -x 'test -- --test-threads=1 --nocapture'
 
 # Run all 
 cargo test -- --test-threads=1 --nocapture
-```
-
-### Ignore this
-
-dbus in docker?
-
-https://georgik.rocks/how-to-start-d-bus-in-docker-container/
-
-https://gist.github.com/eoli3n/93111f23dbb1233f2f00f460663f99e2
-
-sudo nano /etc/gdm3/custom.conf
-
-In wayland - although so far untested
-screen toggling requires these envs:
-```bash 
-export XDG_RUNTIME_DIR="/run/user/$UID"
-export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
 ```
