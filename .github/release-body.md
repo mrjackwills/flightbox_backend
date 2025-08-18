@@ -1,7 +1,12 @@
-### 2025-08-12
+### 2025-08-18
 
 ### Chores
-+ dependencies updated, [0d9b8a69ab5f137ba2e4af0787917f3750c48d69]
-+ .devcontainer update, [1cb4251c34192a5246a70ea56e00db614ed0b56e]
++ dependencies updated, [3e300723aeea7066300d9be582ae40f8d9b904cd]
+
+### Features
++ build for x86 musl, [87536dfca15126ec21e1ea2b3f3eedd059a2a212]
+
+### Refactors
++ screen controls removed, [21b58373954043db23341fec156ecd0671d43969]
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details

@@ -3,7 +3,7 @@ use std::time::Instant;
 use serde::{Deserialize, Serialize};
 use tokio::fs::read_to_string;
 
-use crate::{parse_env::AppEnv};
+use crate::parse_env::AppEnv;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SysInfo {
@@ -111,7 +111,6 @@ mod tests {
         // CHECK
         assert_eq!(result, "123.123.123.123");
     }
-
 
     #[tokio::test]
     async fn sysinfo_get_sysinfo_ok() {
