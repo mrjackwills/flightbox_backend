@@ -139,7 +139,7 @@ update_version_number_in_files() {
 	sed -i -r -E "s=image: (\w+):[0-9]+\.[0-9]+\.[0-9]+=image: \1:${MAJOR}.${MINOR}.${PATCH}=g" ./docker/dev.docker-compose.yml
 
 	# Update version number on api dockerfile, to download latest release from github
-	sed -i -r -E "s/^ARG FLIGHTBOX_VERSION=v[0-9]+.[0-9]+.[0-9]+/ARG FLIGHTBOX_VERSION=v${MAJOR}.${MINOR}.${PATCH}/" ./docker/Dockerfile
+	sed -i -r -E "s/^ARG CURRENT_VERSION=v[0-9]+.[0-9]+.[0-9]+/ARG CURRENT_VERSION=v${MAJOR}.${MINOR}.${PATCH}/" ./docker/Dockerfile
 }
 
 # Work out the current version, based on git tags
@@ -200,6 +200,13 @@ check_cross() {
 	fi
 }
 
+# Build for linux x86
+cross_build_x86_linux() {
+	check_cross
+	echo -e "${YELLOW}cross build --target x86_64-unknown-linux-musl --release${RESET}"
+	cross build --target x86_64-unknown-linux-musl --release
+}
+
 # Build for linux arm64
 cargo_build_aarch64_linux() {
 	check_cross
@@ -211,6 +218,8 @@ cargo_build_aarch64_linux() {
 # This will download GB's of docker images
 cargo_build_all() {
 	cargo_build_aarch64_linux
+	ask_continue
+	cross_build_x86_linux
 	ask_continue
 }
 
@@ -314,8 +323,9 @@ release_flow() {
 build_choice() {
 	cmd=(dialog --backtitle "Choose option" --keep-tite --radiolist "choose" 14 80 16)
 	options=(
-		1 "aarch64 musl linux" off
-		2 "all" off
+		1 "x86 musl linux" off
+		2 "aarch64 musl linux" off
+		3 "all" off
 	)
 	choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 	exitStatus=$?
@@ -329,10 +339,15 @@ build_choice() {
 			exit
 			;;
 		1)
-			cargo_build_aarch64_linux
+			cross_build_x86_linux
 			exit
 			;;
 		2)
+			cargo_build_aarch64_linux
+			exit
+			;;
+	
+		3)
 			cargo_build_all
 			exit
 			;;

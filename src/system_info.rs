@@ -2,9 +2,8 @@ use std::time::Instant;
 
 use serde::{Deserialize, Serialize};
 use tokio::fs::read_to_string;
-use tracing::{error, trace};
 
-use crate::{S, parse_env::AppEnv};
+use crate::parse_env::AppEnv;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SysInfo {
@@ -12,27 +11,8 @@ pub struct SysInfo {
     pub api_version: String,
     pub internal_ip: String,
     pub uptime_app: u64,
-    pub screen_on: bool,
     pub uptime_ws: u64,
 }
-
-// busctl --user set-property org.gnome.Mutter.DisplayConfig /org/gnome/Mutter/DisplayConfig org.gnome.Mutter.DisplayConfig PowerSaveMode i 0
-// Common arguments for toggling screen power, and getting screen status
-const MUTTER: &str = "org.gnome.Mutter.DisplayConfig";
-const WAYLAND_ARGS: [&str; 4] = [
-    MUTTER,
-    "/org/gnome/Mutter/DisplayConfig",
-    MUTTER,
-    "PowerSaveMode",
-];
-
-// X11 stdout search term
-const X11_SEARCH_TERM: &str = "Monitor is O";
-// THIS needs to match the length of above
-const X11_SEARCH_TERM_LEN: u8 = 12;
-
-const BUSCTL: &str = "busctl";
-const XSET: &str = "xset";
 
 const NA: &str = "N/A";
 
@@ -45,86 +25,6 @@ impl SysInfo {
             ip.trim().to_owned()
         } else {
             NA.into()
-        }
-    }
-
-    /// Wayland, get screen status, defaults to false
-    /// use app_env to see whether in WAYLAND or X11
-    pub async fn screen_status(app_env: &AppEnv) -> bool {
-        if app_env.wayland {
-            match tokio::process::Command::new(BUSCTL)
-                .args(["--user", "get-property"].into_iter().chain(WAYLAND_ARGS))
-                .output()
-                .await
-            {
-                Ok(output) => String::from_utf8(output.stdout).unwrap_or_default().trim() == "i 0",
-                Err(e) => {
-                    error!("wayland::{e:?}");
-                    false
-                }
-            }
-        } else {
-            match tokio::process::Command::new(XSET)
-                .args(["-display", ":0.0", "q"])
-                .output()
-                .await
-            {
-                Ok(output) => {
-                    let stdout = String::from_utf8(output.stdout).unwrap_or_default();
-                    // This will either be "Monitor is On" or "Monitor is Off", so just take the first char after "O"
-                    // if "n" monitor is on, else off
-                    let next_char = stdout
-                        .match_indices(X11_SEARCH_TERM)
-                        .map(|i| {
-                            stdout
-                                .split_at(i.0 + usize::from(X11_SEARCH_TERM_LEN))
-                                .1
-                                .chars()
-                                .take(1)
-                                .collect::<String>()
-                                .trim()
-                                .to_owned()
-                        })
-                        .collect::<Vec<_>>();
-                    next_char.first() == Some(&S!("n"))
-                }
-                Err(e) => {
-                    error!("XSET error:: {e:?}");
-                    false
-                }
-            }
-        }
-    }
-
-    /// Turn screen on or off, use app_env to see whether in WAYLAND or X11
-    pub fn toggle_screen(app_env: &AppEnv, on: bool) {
-        if app_env.wayland {
-            let suffix = if on { "0" } else { "1" };
-            match std::process::Command::new(BUSCTL)
-                .args(
-                    ["--user", "set-property"]
-                        .into_iter()
-                        .chain(WAYLAND_ARGS)
-                        .chain(["i", suffix]),
-                )
-                .spawn()
-            {
-                Ok(_) => trace!("screen status changed"),
-                Err(e) => {
-                    error!("toggle::{e:?}");
-                }
-            }
-        } else {
-            let switch = if on { "on" } else { "off" };
-            match std::process::Command::new(XSET)
-                .args(["-display", ":0.0", "dpms", "force", switch])
-                .spawn()
-            {
-                Ok(_) => trace!("screen status changed"),
-                Err(e) => {
-                    error!("toggle::{e:?}");
-                }
-            }
         }
     }
 
@@ -144,7 +44,6 @@ impl SysInfo {
                 .map_or(0, |value| value.as_secs()),
             uptime_ws: ws_connect_at.elapsed().as_secs(),
             api_version: env!("CARGO_PKG_VERSION").into(),
-            screen_on: Self::screen_status(app_env).await,
         }
     }
 }
@@ -168,7 +67,6 @@ mod tests {
             start_time: SystemTime::now(),
             url_adsbdb: C!(na),
             url_tar0190: C!(na),
-            wayland: true,
             ws_address: C!(na),
             ws_api_key: C!(na),
             ws_password: C!(na),
@@ -212,21 +110,6 @@ mod tests {
 
         // CHECK
         assert_eq!(result, "123.123.123.123");
-    }
-
-    #[tokio::test]
-    async fn sysinfo_screen_status_ok() {
-        // FIXTURES
-        let app_env = setup_test_env(S!());
-
-        // ACTIONS
-        let result = SysInfo::screen_status(&app_env).await;
-
-        println!("{result}");
-        // CHECK
-        // Assumes ones computer has been turned on for one minute
-        // assert!(result > 60);
-        // cleanup();
     }
 
     #[tokio::test]

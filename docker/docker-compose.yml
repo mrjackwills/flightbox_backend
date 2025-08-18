@@ -1,7 +1,7 @@
 
 services:
   flightbox_client:
-    image: flightbox_client:0.2.4
+    image: flightbox_client:0.3.0
     build:
       context: $HOME/flightbox.d/
       dockerfile: ./docker/Dockerfile
@@ -9,7 +9,6 @@ services:
     volumes:
       - $HOME/flightbox.d/docker/.env:/app_env/.env:ro
       - /ramdrive/ip.addr:/ip_address/ip.addr:ro
-      - /tmp/.X11-unix:/tmp/.X11-unix
     cap_drop:
       - all
     security_opt:

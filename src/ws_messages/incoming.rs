@@ -10,8 +10,6 @@ pub enum MessageValues {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "snake_case", tag = "message", content = "body")]
 pub enum ParsedMessage {
-    On,
-    Off,
     Status,
     Flights,
 }
@@ -93,50 +91,6 @@ mod tests {
             }"#;
         let result = to_struct(data);
         assert!(result.is_none());
-    }
-
-    #[test]
-    fn message_incoming_parse_on_unique_ok() {
-        let now = now_string();
-
-        let data = format!(r#"{{"data":{{"message":"on"}}, "unique":"{now}"}}"#);
-        let result = to_struct(&data);
-        assert!(result.is_some());
-        let result = result.unwrap();
-        match result {
-            MessageValues::Valid(ParsedMessage::On, unique) => {
-                assert_eq!(unique, now);
-            }
-            _ => unreachable!("Shouldn't have matched this"),
-        }
-    }
-
-    #[test]
-    fn message_incoming_parse_off_unique_err() {
-        let data = r#"
-            {
-            	"data": {
-            		"message" : "off",
-            	}
-            }"#;
-        let result = to_struct(data);
-        assert!(result.is_none());
-    }
-
-    #[test]
-    fn message_incoming_parse_off_unique_ok() {
-        let now = now_string();
-
-        let data = format!(r#"{{"data":{{"message":"off"}}, "unique":"{now}"}}"#);
-        let result = to_struct(&data);
-        assert!(result.is_some());
-        let result = result.unwrap();
-        match result {
-            MessageValues::Valid(ParsedMessage::Off, unique) => {
-                assert_eq!(unique, now);
-            }
-            _ => unreachable!("Shouldn't have matched this"),
-        }
     }
 
     #[test]
