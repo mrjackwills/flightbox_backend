@@ -3,7 +3,7 @@ use std::fmt::Write;
 use reqwest::Client;
 use serde::{Deserialize, Deserializer, Serialize};
 
-use crate::{C, app_error::AppError, parse_env::AppEnv};
+use crate::{C, S, app_error::AppError, parse_env::AppEnv};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Aircraft {
@@ -90,7 +90,7 @@ where
     D: Deserializer<'de>,
 {
     let callsign = String::deserialize(deserializer)?;
-    Ok(Some(callsign.trim_end().to_owned()))
+    Ok(Some(S!(callsign.trim_end())))
 }
 
 #[derive(Debug, Clone)]
