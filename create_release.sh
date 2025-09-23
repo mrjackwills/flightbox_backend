@@ -269,7 +269,7 @@ release_flow() {
 	get_git_remote_url
 
 	cargo_test
-	cargo_build_all 0
+	cross_build_all 0
 
 	cd "${CWD}" || error_close "Can't find ${CWD}"
 	check_tag
@@ -360,11 +360,11 @@ build_choice() {
 			;;
 	
 		3)
-			cargo_build_all 0
+			cross_build_all 0
 			exit
 			;;
 		4)
-			cargo_build_all 1
+			cross_build_all 1
 			exit
 			;;
 		esac
