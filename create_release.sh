@@ -228,7 +228,7 @@ cross_build_all() {
 	fi
 	skip_confirm=$1
 	cargo_build_aarch64_linux
-	["$skip_confirm" -ne 1 ] && ask_continue
+	[ "$skip_confirm" -ne 1 ] && ask_continue
 	cross_build_x86_linux
 	[ "$skip_confirm" -ne 1 ] && ask_continue
 
