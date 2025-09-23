@@ -9,7 +9,7 @@ ARG DOCKER_GUID=1000
 ARG DOCKER_UID=1000
 
 # This gets automatically updated via create_release.sh
-ARG CURRENT_VERSION=v0.3.0
+ARG CURRENT_VERSION=v0.3.1
 
 RUN addgroup -g "${DOCKER_GUID}" -S "${DOCKER_APP_GROUP}" \
 	&& adduser -u "${DOCKER_UID}" -S -G "${DOCKER_APP_GROUP}" "${DOCKER_APP_USER}" \
@@ -25,7 +25,7 @@ RUN ARCH=$(uname -m) && \
 		aarch64) SUFFIX=aarch64 ;; \
 		*) exit 1 ;; \
 	esac \ 
-	&& wget "https://github.com/mrjackwills/flightbox_backend/releases/download/v${CURRENT_VERSION}/flightbox_linux_${SUFFIX}.tar.gz" \
+	&& wget "https://github.com/mrjackwills/flightbox_backend/releases/download/${CURRENT_VERSION}/flightbox_linux_${SUFFIX}.tar.gz" \
 	&& tar xzvf flightbox_linux_${SUFFIX}.tar.gz flightbox \
 	&& rm "flightbox_linux_${SUFFIX}.tar.gz" \
 	&& chown "${DOCKER_APP_USER}:${DOCKER_APP_GROUP}" /app/flightbox
@@ -43,6 +43,6 @@ COPY --from=setup /app/ /app
 COPY --from=setup /etc/passwd /etc/group /etc/
 COPY --from=setup /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-USER "${DOCKER_APP_USER}""
+USER "${DOCKER_APP_USER}"
 
 ENTRYPOINT ["/app/flightbox"]

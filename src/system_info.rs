@@ -3,7 +3,7 @@ use std::time::Instant;
 use serde::{Deserialize, Serialize};
 use tokio::fs::read_to_string;
 
-use crate::parse_env::AppEnv;
+use crate::{S, parse_env::AppEnv};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SysInfo {
@@ -22,7 +22,7 @@ impl SysInfo {
             .await
             .unwrap_or_else(|_| NA.into());
         if ip.len() > 1 {
-            ip.trim().to_owned()
+            S!(ip.trim())
         } else {
             NA.into()
         }
