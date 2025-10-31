@@ -1,3 +1,6 @@
+### Chores
++ dependencies updated, [58ab90822b10b0fe64a4c6c9f7c3fd84f48aeb7a]
+
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.3.1'>v0.3.1</a>
 ### 2025-09-23
 
