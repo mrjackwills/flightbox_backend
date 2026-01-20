@@ -1,50 +1,51 @@
-use futures_util::SinkExt;
-use futures_util::lock::Mutex;
-use std::sync::Arc;
-use std::time::Instant;
-use tracing::{error, trace};
+use async_channel::Sender;
+use std::{process, time::Instant};
 
 use crate::C;
-use crate::adsbdb_response::Adsbdb;
+use crate::adsbdb::Adsbdb;
+use crate::message_handler::Msg;
+use crate::app_env::AppEnv;
 use crate::system_info::SysInfo;
-use crate::ws_messages::{MessageValues, ParsedMessage, Response, StructuredResponse};
-use crate::{parse_env::AppEnv, ws_messages::to_struct};
-
-use super::WSWriter;
+use crate::ws_messages::to_struct;
+use crate::ws_messages::{MessageValues, ParsedMessage, Response};
 
 #[derive(Debug, Clone)]
 pub struct WSSender {
+    app_envs: AppEnv,
     adsbdb: Adsbdb,
-    app_env: AppEnv,
     connected_instant: Instant,
-    writer: Arc<Mutex<WSWriter>>,
+    tx: Sender<Msg>,
 }
 
 impl WSSender {
-    pub fn new(app_env: &AppEnv, connected_instant: Instant, writer: Arc<Mutex<WSWriter>>) -> Self {
-        let adsbdb = Adsbdb::new(app_env);
+    pub fn new(app_envs: &AppEnv, tx: &Sender<Msg>) -> Self {
         Self {
-            adsbdb,
-            app_env: C!(app_env),
-            connected_instant,
-            writer,
+            adsbdb: Adsbdb::new(app_envs),
+            app_envs: C!(app_envs),
+            connected_instant: std::time::Instant::now(),
+            tx: C!(tx),
         }
+    }
+
+    /// Update the connected_instance time
+    pub fn on_connection(&mut self) {
+        self.connected_instant = std::time::Instant::now();
     }
 
     /// Handle text message, in this program they will all be json text
     pub async fn on_text(&self, message: String) {
         if let Some(data) = to_struct(&message) {
             match data {
-                MessageValues::Invalid(error) => error!("{error:?}"),
+                MessageValues::Invalid(error) => tracing::error!("{error:?}"),
                 MessageValues::Valid(message, unique) => match message {
-                    ParsedMessage::Status => self.send_status(unique).await,
+                    ParsedMessage::Status => self.send_status(Some(unique)).await,
                     ParsedMessage::Flights => match self.adsbdb.get_current_flights().await {
                         Ok(data) => {
-                            self.send_ws_response(Response::Flights(data), None, unique)
+                            self.send_ws_response(Response::Flights(data), None, Some(unique))
                                 .await;
                         }
                         Err(e) => {
-                            error!("get_current_flights::{e:?}");
+                            tracing::error!("get_current_flights::{e:?}");
                         }
                     },
                 },
@@ -53,36 +54,26 @@ impl WSSender {
     }
 
     /// Send a message to the socket
-    async fn send_ws_response(&self, response: Response, cache: Option<bool>, unique: String) {
-        match self
-            .writer
-            .lock()
-            .await
-            .send(StructuredResponse::data(response, cache, unique))
-            .await
-        {
-            Ok(()) => trace!("Message sent"),
+    /// cache could just be Option<()>, and if some then send true?
+    async fn send_ws_response(
+        &self,
+        response: Response,
+        cache: Option<bool>,
+        unique: Option<String>,
+    ) {
+        match self.tx.send(Msg::ToSend((response, cache, unique))).await {
+            Ok(()) => (),
             Err(e) => {
-                error!("send_ws_response::SEND-ERROR::{e:?}");
-                self.writer.lock().await.close().await.ok();
+                tracing::error!("{e}");
+                process::exit(1);
             }
         }
     }
 
     /// Send status of flightbox backend machine to client
-    pub async fn send_status(&self, unique: String) {
-        let info = SysInfo::new(&self.app_env, &self.connected_instant).await;
+    pub async fn send_status(&self, unique: Option<String>) {
+        let info = SysInfo::new(&self.app_envs, &self.connected_instant).await;
         let response = Response::Status(info);
         self.send_ws_response(response, Some(true), unique).await;
-    }
-
-    /// close connection, uses a 2 second timeout
-    pub async fn close(&self) {
-        tokio::time::timeout(
-            std::time::Duration::from_secs(2),
-            self.writer.lock().await.close(),
-        )
-        .await
-        .ok();
     }
 }

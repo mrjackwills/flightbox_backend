@@ -1,17 +1,17 @@
 use std::time::Instant;
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use tokio::fs::read_to_string;
 
-use crate::{S, parse_env::AppEnv};
+use crate::{S, app_env::AppEnv};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Clone)]
 pub struct SysInfo {
-    pub uptime: usize,
     pub api_version: String,
     pub internal_ip: String,
     pub uptime_app: u64,
     pub uptime_ws: u64,
+    pub uptime: usize,
 }
 
 const NA: &str = "N/A";
@@ -36,14 +36,15 @@ impl SysInfo {
     }
 
     pub async fn new(app_env: &AppEnv, ws_connect_at: &Instant) -> Self {
+        let (internal_ip, uptime) = tokio::join!(Self::get_ip(app_env), Self::get_uptime());
         Self {
-            internal_ip: Self::get_ip(app_env).await,
-            uptime: Self::get_uptime().await,
+            api_version: env!("CARGO_PKG_VERSION").into(),
+            internal_ip,
             uptime_app: std::time::SystemTime::now()
                 .duration_since(app_env.start_time)
                 .map_or(0, |value| value.as_secs()),
             uptime_ws: ws_connect_at.elapsed().as_secs(),
-            api_version: env!("CARGO_PKG_VERSION").into(),
+            uptime,
         }
     }
 }

@@ -1,34 +1,21 @@
-use parse_env::AppEnv;
+use async_channel::Sender;
 
-mod adsbdb_response;
+mod adsbdb;
 mod app_error;
 mod cron;
-mod parse_env;
+mod macros;
+mod message_handler;
+mod app_env;
 mod system_info;
-mod ws;
 mod ws_messages;
+mod ws;
 
 use cron::Cron;
-use ws::open_connection;
+use tokio::signal;
 
-/// Simple macro to create a new String, or convert from a &str to a String - basically just gets rid of String::from() / .to_owned() etc
-#[macro_export]
-macro_rules! S {
-    () => {
-        String::new()
-    };
-    ($s:expr) => {
-        String::from($s)
-    };
-}
-
-/// Simple macro to call `.clone()` on whatever is passed in
-#[macro_export]
-macro_rules! C {
-    ($i:expr) => {
-        $i.clone()
-    };
-}
+use crate::{
+    app_env::AppEnv, app_error::AppError, message_handler::{MessageHandler, Msg}
+};
 
 fn setup_tracing(app_env: &AppEnv) {
     tracing_subscriber::fmt()
@@ -36,11 +23,53 @@ fn setup_tracing(app_env: &AppEnv) {
         .init();
 }
 
-#[tokio::main]
-async fn main() {
-    let app_env = parse_env::AppEnv::get_env();
+#[allow(clippy::expect_used)]
+fn shutdown_signal(sender: &Sender<Msg>) {
+    let sender = C!(sender);
+    tokio::spawn(async move {
+        let ctrl_c = async {
+            signal::ctrl_c()
+                .await
+                .expect("failed to install Ctrl+C handler");
+        };
+
+        #[cfg(unix)]
+        let terminate = async {
+            signal::unix::signal(signal::unix::SignalKind::terminate())
+                .expect("failed to install signal handler")
+                .recv()
+                .await;
+        };
+
+        #[cfg(not(unix))]
+        let terminate = std::future::pending::<()>();
+
+        tokio::select! {
+            () = ctrl_c => {},
+            () = terminate => {},
+        }
+        sender.send(Msg::Exit).await.ok();
+        sleep!(250);
+        println!("closed");
+        std::process::exit(1);
+    });
+}
+
+async fn start() -> Result<(), AppError> {
+    let app_env = app_env::AppEnv::get_env();
     setup_tracing(&app_env);
     tracing::info!("{} - {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
     Cron::init(&app_env);
-    tokio::spawn(open_connection(app_env)).await.ok();
+    let (tx, rx) = async_channel::bounded(2048);
+    shutdown_signal(&tx);
+    MessageHandler::new(app_env, rx, tx).start().await
+}
+
+#[tokio::main]
+
+async fn main() -> Result<(), AppError> {
+    if let Err(e) = tokio::spawn(start()).await {
+        tracing::error!("{e}");
+    }
+    Ok(())
 }

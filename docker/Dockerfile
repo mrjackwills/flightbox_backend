@@ -1,7 +1,7 @@
 #########
 # SETUP #
 #########
-FROM alpine:3.22 AS setup
+FROM alpine:3.23 AS setup
 
 ARG DOCKER_APP_USER=app_user
 ARG DOCKER_APP_GROUP=app_group

@@ -1,5 +1,4 @@
-use super::WsStream;
-use crate::{app_error::AppError, parse_env::AppEnv};
+use crate::{app_error::AppError, message_handler::WsStream, app_env::AppEnv};
 use serde::{Deserialize, Serialize};
 use tokio_tungstenite::{self, connect_async, tungstenite::http::StatusCode};
 
@@ -44,6 +43,7 @@ async fn get_auth_token(app_envs: &AppEnv) -> Result<String, AppError> {
         .await?
         .response)
 }
+
 /// Connect to wesbsocket server
 pub async fn ws_upgrade(app_envs: &AppEnv) -> Result<WsStream, AppError> {
     let url = format!(

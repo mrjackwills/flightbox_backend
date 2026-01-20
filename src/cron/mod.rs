@@ -1,10 +1,8 @@
 use std::time::{Duration, Instant};
 
-use tracing::{debug, error};
 
 use crate::{
-    adsbdb_response::{self, Adsbdb},
-    parse_env::AppEnv,
+    adsbdb::Adsbdb, app_env::AppEnv
 };
 
 pub struct Cron {
@@ -17,7 +15,7 @@ const ONE_MINUTE_IN_SEC: u64 = 60;
 impl Cron {
     /// Create a basic cron job, spawn into own tokio thread
     pub fn init(app_env: &AppEnv) {
-        let adsbdb = adsbdb_response::Adsbdb::new(app_env);
+        let adsbdb = Adsbdb::new(app_env);
         let inner = Self {
             adsbdb,
             sleep_duration: std::time::Duration::from_secs(ONE_MINUTE_IN_SEC * 5),
@@ -30,9 +28,9 @@ impl Cron {
     /// Ignore, other than log, any errors from get_current_flights
     async fn execute(&self) {
         match self.adsbdb.get_current_flights().await {
-            Ok(_) => debug!("cron executed correctly"),
+            Ok(_) => tracing::debug!("cron executed correctly"),
             Err(e) => {
-                error!("croner::{e:?}");
+                tracing::error!("croner::{e:?}");
             }
         }
     }
