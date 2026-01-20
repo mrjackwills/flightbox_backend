@@ -21,9 +21,6 @@ services:
       resources:
         limits:
           memory: 64m
-    logging:
-      options:
-        max-size: 10m
 networks:
   flightbox_client-net:
     name: flightbox_client-net
