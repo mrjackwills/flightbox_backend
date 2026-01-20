@@ -1,20 +1,22 @@
 use async_channel::Sender;
 
 mod adsbdb;
+mod app_env;
 mod app_error;
 mod cron;
 mod macros;
 mod message_handler;
-mod app_env;
 mod system_info;
-mod ws_messages;
 mod ws;
+mod ws_messages;
 
 use cron::Cron;
 use tokio::signal;
 
 use crate::{
-    app_env::AppEnv, app_error::AppError, message_handler::{MessageHandler, Msg}
+    app_env::AppEnv,
+    app_error::AppError,
+    message_handler::{MessageHandler, Msg},
 };
 
 fn setup_tracing(app_env: &AppEnv) {
@@ -68,8 +70,12 @@ async fn start() -> Result<(), AppError> {
 #[tokio::main]
 
 async fn main() -> Result<(), AppError> {
-    if let Err(e) = tokio::spawn(start()).await {
-        tracing::error!("{e}");
-    }
+    tokio::spawn(async move {
+        if let Err(e) = start().await {
+            tracing::error!("{e:}");
+        }
+    })
+    .await
+    .ok();
     Ok(())
 }
