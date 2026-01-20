@@ -1,7 +1,7 @@
 #########
 # SETUP #
 #########
-FROM alpine:3.22 AS setup
+FROM alpine:3.23 AS setup
 
 ARG DOCKER_APP_USER=app_user
 ARG DOCKER_APP_GROUP=app_group
@@ -9,7 +9,7 @@ ARG DOCKER_GUID=1000
 ARG DOCKER_UID=1000
 
 # This gets automatically updated via create_release.sh
-ARG CURRENT_VERSION=v0.3.1
+ARG CURRENT_VERSION=v0.4.0
 
 RUN addgroup -g "${DOCKER_GUID}" -S "${DOCKER_APP_GROUP}" \
 	&& adduser -u "${DOCKER_UID}" -S -G "${DOCKER_APP_GROUP}" "${DOCKER_APP_USER}" \

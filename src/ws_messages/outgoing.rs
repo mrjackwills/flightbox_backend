@@ -1,9 +1,9 @@
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use tokio_tungstenite::tungstenite::Message;
 
-use crate::{adsbdb_response::CombinedResponse, system_info::SysInfo};
+use crate::{adsbdb::CombinedResponse, system_info::SysInfo};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone)]
 #[serde(rename_all = "snake_case", tag = "message", content = "data")]
 pub enum Response {
     Status(SysInfo),
@@ -11,20 +11,20 @@ pub enum Response {
 }
 
 /// These get sent to the websocket server when in structured_data mode,
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Debug)]
 #[serde(rename_all = "snake_case")]
 pub struct StructuredResponse {
     data: Option<Response>,
     #[serde(skip_serializing_if = "Option::is_none")]
     error: Option<Response>,
-    unique: String,
+    unique: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     cache: Option<bool>,
 }
 
 impl StructuredResponse {
     /// Convert a ResponseMessage into a Tokio message of StructureResponse
-    pub fn data(data: Response, cache: Option<bool>, unique: String) -> Message {
+    pub fn data(data: Response, cache: Option<bool>, unique: Option<String>) -> Message {
         let x = Self {
             data: Some(data),
             error: None,
@@ -39,7 +39,7 @@ impl StructuredResponse {
         let x = Self {
             error: Some(data),
             data: None,
-            unique,
+            unique: Some(unique),
             cache: None,
         };
         Message::Text(serde_json::to_string(&x).unwrap_or_default().into())
