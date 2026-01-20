@@ -3,7 +3,12 @@ use std::fmt::Write;
 use reqwest::Client;
 mod response;
 
-use crate::{C, adsbdb::response::{AdsbdbResponse, Response, Tar1090Aircraft, Tar1090Response}, app_error::AppError, app_env::AppEnv};
+use crate::{
+    C,
+    adsbdb::response::{AdsbdbResponse, Response, Tar1090Aircraft, Tar1090Response},
+    app_env::AppEnv,
+    app_error::AppError,
+};
 
 pub use response::CombinedResponse;
 
