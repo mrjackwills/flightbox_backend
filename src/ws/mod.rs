@@ -6,7 +6,7 @@ mod ws_sender;
 use async_channel::Sender;
 use connect::ws_upgrade;
 
-use crate::{message_handler::Msg, app_env::AppEnv};
+use crate::{app_env::AppEnv, message_handler::Msg};
 
 pub use connection_details::ConnectionDetails;
 pub use socket::Socket;

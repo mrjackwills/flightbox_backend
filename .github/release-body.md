@@ -1,14 +1,15 @@
-### 2025-09-23
+### 2026-01-20
 
 ### Chores
-+ create_release.sh updated, [0427ce81359c36cb4261838adbf8fca74ca36dc1], [5c56779476031e147345bd818354e5020f5baf7f], [bef1d7826fd0acf61b436f13b76853a218c35cfd]
-+ GitHub workflow updated, [2d6447196d08d5eb39e66df25ea6d5826a463ee5], [5935e07ac133d5b7556f7bfb41e4b22e4c504ccb]
-+ dependencies updated, [6d121a2c225cefc5bcd786d8368babf3392f435d], [1d2c170ec1b3eccbad77cca786be11a2ce67550d]
++ dependencies updated, [58ab90822b10b0fe64a4c6c9f7c3fd84f48aeb7a], [d9fc18b474d2af72e2f4f1d63dbfa519c1521df4]
++ GitHub workflow updated, [a1ba6c74595b9ca0ece12099ebfd9ea2a90f3e57]
++ Cargo.toml linting fix, [debfb3c6ee4bb0ae7a44a4db4774f102c37ae02b]
 
 ### Features
-+ use S! macro, [21f9a739afe407ce4a010a6a9ed7ce1ddd425b67]
++ remove Docker logging limit, [fcc102d042432a9807a50bdf9f4c05937a605f50]
++ use async_channels, [759f9f40b01e242e8fb162e8c92589902107112a]
 
 ### Fixes
-+ Dockerfile typos, [4f4238b2fe7fe489f63786946d25d377d6a8fed0]
++ main fn error handling, [1cb8543ed2025c7774cedf9b687ba1b7a3be5254]
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details

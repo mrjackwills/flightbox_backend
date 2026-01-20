@@ -1,9 +1,6 @@
 use std::time::{Duration, Instant};
 
-
-use crate::{
-    adsbdb::Adsbdb, app_env::AppEnv
-};
+use crate::{adsbdb::Adsbdb, app_env::AppEnv};
 
 pub struct Cron {
     adsbdb: Adsbdb,
