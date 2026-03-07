@@ -1,6 +1,33 @@
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, de::IntoDeserializer};
 
 use crate::S;
+
+/// Parse an i64, custom error if failure, if contains "ground", return 0
+fn parse_i64<'de, D>(deserializer: D) -> Result<i64, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    match i64::deserialize(deserializer) {
+        Ok(alt) => Ok(alt),
+        Err(e) => {
+            if e.to_string().contains("ground") {
+                Ok(0)
+            } else {
+                Err(e)
+            }
+        }
+    }
+}
+
+pub fn parse_op_i64<'de, D>(deserializer: D) -> Result<Option<i64>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    match Option::<i64>::deserialize(deserializer)? {
+        Some(x) => Ok(Some(parse_i64(x.into_deserializer())?)),
+        _ => Ok(None),
+    }
+}
 
 // TODO just make everything pub
 
@@ -68,6 +95,7 @@ pub struct Tar1090Aircraft {
     #[serde(rename(serialize = "mode_s"))]
     pub(crate) hex: String,
     #[serde(rename(serialize = "altitude"))]
+    #[serde(deserialize_with = "parse_op_i64")]
     pub(crate) alt_baro: Option<i64>,
     #[serde(
         default,
