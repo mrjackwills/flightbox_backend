@@ -118,4 +118,3 @@ pub struct Tar1090Aircraft {
 pub struct Tar1090Response {
     pub(crate) aircraft: Vec<Tar1090Aircraft>,
 }
-
