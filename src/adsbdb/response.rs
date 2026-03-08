@@ -29,8 +29,16 @@ where
     }
 }
 
-// TODO just make everything pub
+// test this, by passing in a Some("xxxx "), and then making sure is matches Some("xxxx")
+fn trim_flight<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let callsign = String::deserialize(deserializer)?;
+    Ok(Some(S!(callsign.trim_end())))
+}
 
+// TODO just make everything pub
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Aircraft {
     #[expect(clippy::struct_field_names)]
@@ -111,11 +119,3 @@ pub struct Tar1090Response {
     pub(crate) aircraft: Vec<Tar1090Aircraft>,
 }
 
-// test this, by passing in a Some("xxxx "), and then making sure is matches Some("xxxx")
-fn trim_flight<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let callsign = String::deserialize(deserializer)?;
-    Ok(Some(S!(callsign.trim_end())))
-}
