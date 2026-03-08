@@ -1,9 +1,44 @@
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, de::IntoDeserializer};
 
 use crate::S;
 
-// TODO just make everything pub
+/// Parse an i64, custom error if failure, if contains "ground", return 0
+fn parse_i64<'de, D>(deserializer: D) -> Result<i64, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    match i64::deserialize(deserializer) {
+        Ok(alt) => Ok(alt),
+        Err(e) => {
+            if e.to_string().contains("ground") {
+                Ok(0)
+            } else {
+                Err(e)
+            }
+        }
+    }
+}
 
+pub fn parse_op_i64<'de, D>(deserializer: D) -> Result<Option<i64>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    match Option::<i64>::deserialize(deserializer)? {
+        Some(x) => Ok(Some(parse_i64(x.into_deserializer())?)),
+        _ => Ok(None),
+    }
+}
+
+// test this, by passing in a Some("xxxx "), and then making sure is matches Some("xxxx")
+fn trim_flight<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let callsign = String::deserialize(deserializer)?;
+    Ok(Some(S!(callsign.trim_end())))
+}
+
+// TODO just make everything pub
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Aircraft {
     #[expect(clippy::struct_field_names)]
@@ -68,6 +103,7 @@ pub struct Tar1090Aircraft {
     #[serde(rename(serialize = "mode_s"))]
     pub(crate) hex: String,
     #[serde(rename(serialize = "altitude"))]
+    #[serde(deserialize_with = "parse_op_i64")]
     pub(crate) alt_baro: Option<i64>,
     #[serde(
         default,
@@ -81,13 +117,4 @@ pub struct Tar1090Aircraft {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Tar1090Response {
     pub(crate) aircraft: Vec<Tar1090Aircraft>,
-}
-
-// test this, by passing in a Some("xxxx "), and then making sure is matches Some("xxxx")
-fn trim_flight<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let callsign = String::deserialize(deserializer)?;
-    Ok(Some(S!(callsign.trim_end())))
 }

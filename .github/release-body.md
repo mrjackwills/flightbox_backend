@@ -1,15 +1,10 @@
-### 2026-01-20
+### 2026-03-08
 
-### Chores
-+ dependencies updated, [58ab90822b10b0fe64a4c6c9f7c3fd84f48aeb7a], [d9fc18b474d2af72e2f4f1d63dbfa519c1521df4]
-+ GitHub workflow updated, [a1ba6c74595b9ca0ece12099ebfd9ea2a90f3e57]
-+ Cargo.toml linting fix, [debfb3c6ee4bb0ae7a44a4db4774f102c37ae02b]
-
-### Features
-+ remove Docker logging limit, [fcc102d042432a9807a50bdf9f4c05937a605f50]
-+ use async_channels, [759f9f40b01e242e8fb162e8c92589902107112a]
+### Chore
++ dependencies updated, [293b3e0030dbac71dd5b1748109a3066219f2cf9], [daff65ef50fc80d0d6519ec95e42891006e69fa3]
++ GitHub workflow updated, [6659a81b57901d48ec185c29ed28f94ff7792188]
 
 ### Fixes
-+ main fn error handling, [1cb8543ed2025c7774cedf9b687ba1b7a3be5254]
++ Tar1090 response parser handle "ground", [d754d9ff20a0e5d19510f09e1bf78ed3c5eae668]
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details
