@@ -1,5 +1,8 @@
+# <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.4.2'>v0.4.2</a>
+### 2026-03-08
+
 ### Fixes
-+ alt_baro parsing, [e493d4b61dbf13f97098579fc0bfe4e723953373]
++ alt_baro parsing, [e493d4b6](https://github.com/mrjackwills/flightbox_backend/commit/e493d4b61dbf13f97098579fc0bfe4e723953373)
 
 # <a href='https://github.com/mrjackwills/flightbox_backend/releases/tag/v0.4.1'>v0.4.1</a>
 ### 2026-03-08
