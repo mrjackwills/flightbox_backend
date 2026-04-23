@@ -1,6 +1,6 @@
-### 2026-03-08
+### 2026-04-23
 
-### Fixes
-+ alt_baro parsing, [e493d4b61dbf13f97098579fc0bfe4e723953373]
+### Chores
++ dependencies updated, [8ee598b7e8b52acfbb73df2969bbed03d1f96689]
 
 see <a href='https://github.com/mrjackwills/flightbox_backend/blob/main/CHANGELOG.md'>CHANGELOG.md</a> for more details
