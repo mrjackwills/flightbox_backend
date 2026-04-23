@@ -352,7 +352,7 @@ dependencies = [
 
 [[package]]
 name = "flightbox"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "async-channel",
  "dotenvy",
